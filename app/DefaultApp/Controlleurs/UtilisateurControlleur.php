@@ -31,17 +31,12 @@ class UtilisateurControlleur extends Controlleur
                     $utlisateur->setPassword(md5($motdepasse));
                     $message = $utlisateur->add();
                     if ($message === 'ok') {
-                        $t = new \app\DefaultApp\Models\Tracabilite();
-                        $t->action = "Ajouter utilisateur";
-                        $t->add();
                         $variable['success'] = "Fait avec sucess";
                     } else {
                         $variable['erreur'] = $message;
                     }
                 }
-
             }
-
             $this->render("utilisateur/ajouter", $variable);
         }catch (\Exception $ex){
             echo $ex->getMessage();

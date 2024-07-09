@@ -1,3 +1,8 @@
+<?php
+$u=new \app\DefaultApp\Models\Utilisateur();
+$u=$u->findById(\systeme\Model\Utilisateur::session_valeur());
+?>
+
 <div class="header">
     <div class="header-content">
         <nav class="navbar navbar-expand">
@@ -112,8 +117,8 @@
                     <li class="nav-item dropdown header-profile">
                         <a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
                             <div class="header-info">
-                                <span>David Morse</span>
-                                <small>ADMIN</small>
+                                <span><?= ucfirst($u->nom) ?> <?= ucfirst($u->prenom) ?></span>
+                                <small><?= ucfirst($u->role) ?></small>
                             </div>
                             <img src="assets/images/profile/pic1.jpg" width="20" alt="">
                         </a>
@@ -132,7 +137,7 @@
                                 </svg>
                                 <span class="ms-2">Inbox </span>
                             </a>
-                            <a href="page-login.html" class="dropdown-item ai-icon">
+                            <a href="logout" class="dropdown-item ai-icon">
                                 <svg id="icon-logout" xmlns="http://www.w3.org/2000/svg" class="text-danger" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                                     <polyline points="16 17 21 12 16 7"></polyline>

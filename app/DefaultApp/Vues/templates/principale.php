@@ -708,7 +708,57 @@ $v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
 <script src="assets/js/deznav-init.js" type="text/javascript"></script>
 <script src="assets/js/demo.js" type="text/javascript"></script>
 <script src="assets/js/styleSwitcher.js" type="text/javascript"></script>
+<script>
 
+    $("document").ready(function () {
+        $("#load").hide();
+        $("form").addClass("was-validated");
+
+        $(".nom").on("change", function () {
+            $("#load").show();
+            var nombre = Math.floor(Math.random() * Math.floor(100));
+            var nom = $(".nom").val();
+            var prenom = $(".prenom").val();
+            prenom = prenom.charAt(0);
+            var identifiant = prenom + nom + nombre;
+            $(".identifiant").val(identifiant);
+            $("#load").hide();
+
+        });
+
+        $(".prenom").on("change", function () {
+            $("#load").show();
+            var nombre = Math.floor(Math.random() * Math.floor(100));
+            var nom = $(".nom").val();
+            var prenom = $(".prenom").val();
+            prenom = prenom.charAt(0);
+            var identifiant = prenom + nom + nombre;
+            $(".identifiant").val(identifiant);
+            $("#load").hide();
+        });
+
+        $("#markup").change(function () {
+            var cout_total = parseFloat($("#cout_unitaire").val());
+            var markup = parseInt($("#markup").val());
+            markup /= 100;
+
+            var aug = cout_total * markup;
+
+            var prix = cout_total + aug;
+
+            $("#prix").val(prix);
+        });
+
+        $("#prix").change(function () {
+            var cout_achat = parseFloat($("#cout_unitaire").val());
+            var cout_vent = parseFloat($("#prix").val())
+
+            var markup = ((cout_vent / cout_achat) - 1) * 100;
+            $("#markup").val(markup);
+        });
+
+    });
+</script>
 </body>
 
 <!-- Mirrored from mediqu.dexignzone.com/php/demo/index.php by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 08 Jul 2024 14:24:20 GMT -->

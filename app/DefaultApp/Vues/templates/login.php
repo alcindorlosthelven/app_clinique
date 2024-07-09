@@ -60,7 +60,7 @@ if (isset($_COOKIE['logo'])) {
                                     <input type="hidden" name="login">
                                     <div class="form-group">
                                         <label class="mb-1 form-label">Email</label>
-                                        <input name="email" type="email" class="form-control" value="admin@gmail.com">
+                                        <input name="email" type="text" class="form-control" value="admin@gmail.com">
                                     </div>
                                     <div class="mb-4 position-relative">
                                         <label class="mb-1 form-label">Password</label>

@@ -204,6 +204,15 @@ class DemmandeImagerie extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
+    public static function listeEncour2()
+    {
+        $con = self::connection();
+        $req = "select *from demmande_imagerie WHERE statut='encour'";
+        $stmt = $con->prepare($req);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    }
+
     public static function listePret($id_categorie, $id_user = "", $institution = "")
     {
         $con = self::connection();
