@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ public/app.php?url=$1 [QSA,l]
+php_value memory_limit 5000M
