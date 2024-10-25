@@ -57,8 +57,12 @@ if ($patient == null) {
                         <?php
                         if ($statut != "pret") {
                             ?>
-                            <a href="ecrire-resultat-imagerie-<?php echo $id_demande ?>&terminer&id=<?= $id_demande ?>"
-                               class="btn btn-success btn-block" style="z-index: 1">Finaliser demmande</a>
+                            <div style="text-align: center;">
+                                <a href="ecrire-resultat-imagerie-<?php echo $id_demande ?>&terminer&id=<?= $id_demande ?>"
+                                   class="btn btn-success" style="z-index: 1">Finaliser demmande</a>
+                            </div>
+                            <br>
+                            <br>
                             <?php
                         }
                         if (isset($_GET['terminer'])) {
@@ -75,45 +79,56 @@ if ($patient == null) {
                                 ";
                         }
                         ?>
+                        <h3>Indication</h3>
+                        <p><?= stripslashes($demandeImg->indication) ?></p>
                         <?php
                         if ($statut == "pret") {
-                        if (AccesUser::haveAcces("2.6.3.5.6")) {
-                        } else {
-                            ?>
-                            <script>
-                                document.location.href = "afficher-resultat-imagerie-<?= $demandeImg->getId(); ?>";
-                            </script>
-                        <?php
-                        }
+                            if (AccesUser::haveAcces("2.6.3.5.6")) {
+                            } else {
+                                ?>
+                                <script>
+                                    document.location.href = "afficher-resultat-imagerie-<?= $demandeImg->getId(); ?>";
+                                </script>
+                                <?php
+                            }
                         }
                         foreach ($req as $datax) {
                             if ($datax->getStatut() != "n/a") {
                                 $ima = new \app\DefaultApp\Models\Imagerie();
                                 $ima = $ima->findById($datax->getIdImagerie());
                                 ?>
-                                <div class="col-md-12"
-                                     style="border: 1px solid #ba8b00;margin-bottom: 2px;margin-top:2px">
+                                <div class="col-md-12">
                                     <form class="fait_imagerie col-md-12" method="post" enctype="multipart/form-data">
                                         <?php
                                         $id_examen = $ima->getId();
                                         $nomImg = $ima->getNom();
                                         ?>
+                                        <input type="hidden" name="btnfait">
                                         <input type="hidden" name="id_demande" value="<?php echo $id_demande; ?>"/>
                                         <input type="hidden" name="id_examens" value="<?= $id_examen ?>">
                                         <div class="form-group">
                                             <h4><?= strtoupper($nomImg) ?></h4>
                                             <?php
                                             if (\app\DefaultApp\Models\DemmandeImagerie::imagerieDejaFait($id_demande, $id_examen)) {
+                                                $images=json_decode($datax->resultat);
                                                 ?>
-                                                <center><a target="_blank" href="<?= $datax->resultat ?>"><img
-                                                                src="<?= $datax->resultat ?>" style="height: 100px"></a>
-                                                </center>
+                                                <center>
+                                                    <?php
+                                                    if(count($images)>0){
+                                                        foreach ($images as $img){
+                                                            ?>
+                                                            <a target="_blank" href="<?= $img ?>"><img src="<?= $img ?>" style="height: 100px"></a>
 
+                                                            <?php
+                                                        }
+                                                    }
+                                                    ?>
+                                                </center>
                                                 <?php
                                             }
                                             ?>
                                             <label>Fichier</label>
-                                            <input type="file" name="fichier" class="form-control">
+                                            <input accept="image/*" multiple type="file" name="fichier[]" class="form-control" required>
                                         </div>
 
                                         <div class="form-group">
@@ -131,17 +146,19 @@ if ($patient == null) {
                                         </div>
 
                                         <div class="form-group">
-                                            <input type="hidden" name="btnfait">
                                             <?php
                                             if (\app\DefaultApp\Models\DemmandeImagerie::imagerieDejaFait($id_demande, $id_examen)) {
                                                 $result = \app\DefaultApp\Models\DemmandeImagerie::resultatExamenImagerie($id_demande, $id_examen);
                                                 ?>
-                                                <input type="submit" value="Modifier"
-                                                       class="btn btn-primary btn-block">
+                                                <div style="text-align: center">
+                                                    <input type="submit" value="Modifier" class="btn btn-primary">
+                                                </div>
                                                 <?php
                                             } else {
                                                 ?>
-                                                <input type="submit" value="Enregistrer" class="btn btn-primary btn-block">
+                                                <div style="text-align: center">
+                                                    <input type="submit" value="Enregistrer" class="btn btn-primary">
+                                                </div>
                                                 <?php
                                             }
                                             ?>
@@ -150,6 +167,7 @@ if ($patient == null) {
 
                                     </form>
                                 </div>
+                                <br><br>
                                 <?php
                             }
                         }

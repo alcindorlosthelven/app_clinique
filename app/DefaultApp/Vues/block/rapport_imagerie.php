@@ -30,9 +30,7 @@
 if (isset($_POST['de'])) {
     $de = $_POST['de'];
     $a = $_POST['a'];
-    if (isset($_GET['idcategorie'])) {
-        $liste = \app\DefaultApp\Models\DemmandeImagerie::listerParDate($de, $a, $_GET['idcategorie']);
-    }
+    $liste = \app\DefaultApp\Models\DemmandeImagerie::listerParDate($de, $a);
     ?>
     <hr>
     <table id='' class='table table-bordered datatable'

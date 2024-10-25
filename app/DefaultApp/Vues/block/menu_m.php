@@ -13,11 +13,4 @@
         </a>
     </li>
 
-
-    <li><a class="ai-icon" href="patient" aria-expanded="false">
-            <i class="flaticon-381-networking"></i>
-            <span class="nav-text">Patient</span>
-        </a>
-    </li>
-
 </ul>

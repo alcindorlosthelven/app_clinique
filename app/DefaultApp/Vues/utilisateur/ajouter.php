@@ -60,14 +60,9 @@ use app\DefaultApp\Models\AccesUser;
                             <label for="company">Role</label>
                             <select class="form-control" name="role">
                                 <option value="admin">Admin</option>
-                               <!-- <?php
-/*                                if(AccesUser::haveAcces("0.5",\systeme\Model\Utilisateur::session_valeur())){
-                                    */?>
-                                    <option value="superviseur">Superviseur</option>
-                                <?php
-/*                                }
-                                */?>
-                                <option value="secretaire">Secretaire</option>-->
+                                <option value="technicien">Technicien</option>
+                                <option value="réceptionniste">Réceptionniste</option>
+                                <option value="compatabilité">Comptabilité</option>
                             </select>
                         </div>
 

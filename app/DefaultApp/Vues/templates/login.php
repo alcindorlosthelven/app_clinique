@@ -49,22 +49,20 @@ if (isset($_COOKIE['logo'])) {
                     <div class="row no-gutters">
                         <div class="col-xl-12">
                             <div class="auth-form">
-                                <!--
-                                logo
                                 <div class="text-center mb-3">
-                                    <a href="index.html"><img src="<?php /*= \app\DefaultApp\DefaultApp::autre("assets/images/logo-full.png") */?>" alt=""></a>
-                                </div>-->
+                                    <a href="index.html"><img style="width: 200px" src="<?= \app\DefaultApp\DefaultApp::autre("logo.png") ?>" alt=""></a>
+                                </div>
                                 <h4 class="text-center mb-4">Sign in your account</h4>
                                 <div class="message"></div>
                                 <form action="" class="form-login">
                                     <input type="hidden" name="login">
                                     <div class="form-group">
-                                        <label class="mb-1 form-label">Email</label>
-                                        <input name="email" type="text" class="form-control" value="admin@gmail.com">
+                                        <label class="mb-1 form-label">Identifiant</label>
+                                        <input name="email" type="text" class="form-control">
                                     </div>
                                     <div class="mb-4 position-relative">
                                         <label class="mb-1 form-label">Password</label>
-                                        <input name="password" type="password" id="dz-password" class="form-control" value="admin">
+                                        <input name="password" type="password" id="dz-password" class="form-control">
                                         <span class="show-pass eye">
 
 												<i class="fa fa-eye-slash"></i>
@@ -72,7 +70,8 @@ if (isset($_COOKIE['logo'])) {
 
 											</span>
                                     </div>
-                                    <div class="form-row d-flex flex-wrap justify-content-between mt-4 mb-2">
+
+                                  <!--  <div class="form-row d-flex flex-wrap justify-content-between mt-4 mb-2">
                                         <div class="form-group">
                                             <div class="form-check custom-checkbox ms-1">
                                                 <input type="checkbox" class="form-check-input" id="basic_checkbox_1">
@@ -82,14 +81,15 @@ if (isset($_COOKIE['logo'])) {
                                         <div class="form-group ms-2">
                                             <a href="page-forgot-password.html">Forgot Password?</a>
                                         </div>
-                                    </div>
+                                    </div>-->
+
                                     <div class="text-center">
-                                        <button type="submit" class="btn btn-primary btn-block">Sign Me In</button>
+                                        <button type="submit" class="btn btn-success btn-block">Sign Me In</button>
                                     </div>
                                 </form>
-                                <div class="new-account mt-3">
+                                <!--<div class="new-account mt-3">
                                     <p>Don't have an account? <a class="text-primary" href="page-register.html">Sign up</a></p>
-                                </div>
+                                </div>-->
                             </div>
                         </div>
                     </div>
@@ -128,7 +128,7 @@ if (isset($_COOKIE['logo'])) {
                 },
                 success: function (reponse) {
                     $('#load').hide();
-                    $(".message").html(reponse);
+                    //$(".message").html(reponse);
                     var data = $.parseJSON(reponse);
                     if (data.message === "ok") {
                         //$(".message").html("<div class='alert alert-info' style='text-align: center'>Success</div>");

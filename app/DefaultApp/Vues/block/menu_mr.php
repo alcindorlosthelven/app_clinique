@@ -1,12 +1,23 @@
-<?php
 
-use app\DefaultApp\Models\AccesUser;
-use systeme\Application\Application as  App;
-$cache="display:none";
-$aficher="display:inline";
-?>
-<a  href="patient?ajouter" class="btn btn-outline-primary btn-xs">Ajouter</a>
-<a  href="patient?lister" class="btn btn-outline-success btn-xs">Lister</a>
+<ul class="metismenu" id="menu">
 
-<br>
-<br>
+    <li><a class="ai-icon" href="imagerie?gestion" aria-expanded="false">
+            <i class="flaticon-381-networking"></i>
+            <span class="nav-text">Demmande</span>
+        </a>
+    </li>
+
+    <li><a class="ai-icon" href="pos" target="_blank" aria-expanded="false">
+            <i class="flaticon-381-networking"></i>
+            <span class="nav-text">POS</span>
+        </a>
+    </li>
+
+
+    <li><a class="ai-icon" href="patient" aria-expanded="false">
+            <i class="flaticon-381-networking"></i>
+            <span class="nav-text">Patient</span>
+        </a>
+    </li>
+
+</ul>

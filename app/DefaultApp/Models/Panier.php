@@ -13,14 +13,15 @@ use systeme\Model\Model;
 
 class Panier extends Model
 {
-    private $id;
-    private $user;
-    private $produit;
-    private $quantite;
-    private $description;
-    private $prix;
-    private $nom;
-    private $options;
+    protected $table="panier";
+    public $id;
+    public $user;
+    public $produit;
+    public $quantite;
+    public $description;
+    public $prix;
+    public $nom;
+    public $options;
 
     /**
      * @return mixed

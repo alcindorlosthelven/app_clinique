@@ -23,7 +23,17 @@ if (isset($_POST['login'])) {
     $variables['password'] = $user_password;
     try {
         $m=\app\DefaultApp\Models\Utilisateur::connecter($pseudo,$user_password);
-        $variables['message']=$m;
+        if($m!="ok"){
+            $mp=\app\DefaultApp\Models\Patient::connecter($pseudo,$user_password);
+            if($mp!="ok"){
+                $mm=\app\DefaultApp\Models\PersonelMedical::connecter($pseudo,$user_password);
+                $variables['message']=$mm;
+            }else{
+                $variables['message']=$mp;
+            }
+        }else{
+            $variables['message']=$m;
+        }
         echo json_encode($variables);
     } catch (PDOException $e) {
         $variables['message'] = $e->getMessage();

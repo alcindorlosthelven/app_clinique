@@ -1,6 +1,7 @@
 <?php
 
 use app\DefaultApp\Models\AccesUser;
+$role=\systeme\Model\Utilisateur::role();
 $cache = "display:none";
 $aficher = "display:inline";
 function getListeExamens($id)

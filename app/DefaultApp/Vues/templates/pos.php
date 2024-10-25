@@ -5,6 +5,9 @@
  * @author : fater04
  * @created :  11:10 - 2024-07-09
  **/
+
+use Illuminate\Support\Facades\App;
+
 ?>
 <!doctype html>
 <html lang="fr" dir="ltr">
@@ -41,10 +44,12 @@ if (isset($contenue)) {
 <script src="public/pos/libs.min.js"></script>
 <script src="public/pos/toastr.min.js"></script>
 <script src="public/pos/fontawesome-pro-6.5.1/js/all.min.js"></script>
+
 <script type="application/javascript">
 
     $(document).ready(function () {
         $("#ajax-loading").show();
+
         $.ajax({
             url: "app/DefaultApp/traitements/produits.php?liste",
             type: "GET",
@@ -177,32 +182,317 @@ if (isset($contenue)) {
 
     }));
 
-    // $("#btn_payer").on("click", (function (e) {
-    //     var rabais = $("#rabais").val();
-    //     var livraison = $("#livraison").val();
-    //     var taxe = $("#taxe").val();
-    //     if ($.trim(rabais) === "") {
-    //         rabais = 0;
-    //     }
-    //     if ($.trim(livraison) === "") {
-    //         livraison = 0;
-    //     }
-    //     if ($.trim(taxe) === "") {
-    //         taxe = 0;
-    //     }
-    //     e.preventDefault();
-    //     $.ajax({
-    //         url: "app/DefaultApp/traitements/produits.php?modal&rabais=" + rabais + "&livraison=" + livraison + "&taxe=" + taxe,
-    //         type: "GET",
-    //         data: "",
-    //         contentType: false,
-    //         cache: false,
-    //         processData: false,
-    //         success: function (data) {
-    //             $("#space_show_modal").empty().html(data);
-    //         }
-    //     });
-    // }));
+    $(".tyr").on("change", (function (e) {
+        var val_stotal = parseFloat($("#val_stotal").html())
+        var val_rabais = parseFloat($("#rabais").val());
+        var val_rabais_assurance = parseFloat($("#rabais_assurance").val());
+
+        let tyr=$(".tyr").val();
+        let tyra=$(".tyra").val();
+        let r=0;
+
+        if(tyr==="pourcentage") {
+            r = (val_stotal * val_rabais) / 100;
+        }else{
+            r=val_rabais;
+        }
+
+        let ra=0;
+
+        if(tyra==="pourcentage"){
+            ra = (val_stotal * val_rabais_assurance) / 100
+        }else{
+            ra=val_rabais_assurance
+        }
+
+
+        if (isNaN(r)) {
+            r = 0;
+        }
+
+        if (isNaN(ra)) {
+            ra = 0
+        }
+
+        let totalRab = r + ra;
+
+        let valTotal = val_stotal - totalRab;
+
+        $("#val_rabais_assurance").html(ra)
+        $("#val_rabais").html(r)
+        $("#val_total").html(valTotal);
+
+    }))
+
+    $(".tyra").on("change", (function (e) {
+        var val_stotal = parseFloat($("#val_stotal").html())
+        var val_rabais = parseFloat($("#rabais").val());
+        var val_rabais_assurance = parseFloat($("#rabais_assurance").val());
+
+        let tyr=$(".tyr").val();
+        let tyra=$(".tyra").val();
+        let r=0;
+
+        if(tyr==="pourcentage") {
+            r = (val_stotal * val_rabais) / 100;
+        }else{
+            r=val_rabais;
+        }
+
+        let ra=0;
+
+        if(tyra==="pourcentage"){
+            ra = (val_stotal * val_rabais_assurance) / 100
+        }else{
+            ra=val_rabais_assurance
+        }
+
+
+        if (isNaN(r)) {
+            r = 0;
+        }
+
+        if (isNaN(ra)) {
+            ra = 0
+        }
+
+        let totalRab = r + ra;
+
+        let valTotal = val_stotal - totalRab;
+
+        $("#val_rabais_assurance").html(ra)
+        $("#val_rabais").html(r)
+        $("#val_total").html(valTotal);
+
+    }))
+
+    $("#rabais").on("change", (function (e) {
+        var val_stotal = parseFloat($("#val_stotal").html())
+        var val_rabais = parseFloat($("#rabais").val());
+        var val_rabais_assurance = parseFloat($("#rabais_assurance").val());
+
+        let tyr=$(".tyr").val();
+        let tyra=$(".tyra").val();
+        let r=0;
+
+        if(tyr==="pourcentage") {
+            r = (val_stotal * val_rabais) / 100;
+        }else{
+            r=val_rabais;
+        }
+
+        let ra=0;
+
+        if(tyra==="pourcentage"){
+            ra = (val_stotal * val_rabais_assurance) / 100
+        }else{
+            ra=val_rabais_assurance
+        }
+
+
+        if (isNaN(r)) {
+            r = 0;
+        }
+
+        if (isNaN(ra)) {
+            ra = 0
+        }
+
+        let totalRab = r + ra;
+
+        let valTotal = val_stotal - totalRab;
+
+        $("#val_rabais_assurance").html(ra)
+        $("#val_rabais").html(r)
+        $("#val_total").html(valTotal);
+
+    }))
+
+    $("#rabais_assurance").on("change", (function (e) {
+        var val_stotal = parseFloat($("#val_stotal").html())
+        var val_rabais = parseFloat($("#rabais").val());
+        var val_rabais_assurance = parseFloat($("#rabais_assurance").val());
+
+        let tyr=$(".tyr").val();
+        let tyra=$(".tyra").val();
+        let r=0;
+
+        if(tyr==="pourcentage") {
+            r = (val_stotal * val_rabais) / 100;
+        }else{
+            r=val_rabais;
+        }
+
+        let ra=0;
+
+        if(tyra==="pourcentage"){
+            ra = (val_stotal * val_rabais_assurance) / 100
+        }else{
+            ra=val_rabais_assurance
+        }
+
+        if (isNaN(r)) {
+            r = 0;
+        }
+
+        if (isNaN(ra)) {
+            ra = 0
+        }
+
+        let totalRab = r + ra;
+
+        let valTotal = val_stotal - totalRab;
+
+        $("#val_rabais_assurance").html(ra)
+        $("#val_rabais").html(r)
+        $("#val_total").html(valTotal);
+    }))
+
+    $(document).on('click', '.product-custom-card', function (e) {
+        var produit = $(this).data("id");
+        var prix = $(this).data("prix");
+        var nom = $(this).data("nom");
+        var descrition = $(this).data("description");
+        $("#ajax-loading").show();
+        e.preventDefault();
+        $.ajax({
+            url: "app/DefaultApp/traitements/produits.php?ajouter_produit=" + produit + "&prix=" + prix + "&nom=" + nom + "&description=" + descrition,
+            type: "GET",
+            data: "",
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                console.log(data)
+                $("#ajax-loading").hide();
+                var r = $.parseJSON(data);
+                if (r.status === "ok") {
+                    $("#panier_produit").empty();
+                    $("#panier_montant").empty();
+                    $("#panier_produit").html(r.data);
+
+                    var val_stotal = r.sousTotal
+                    var val_rabais = parseFloat($("#rabais").val());
+                    if (isNaN(val_rabais)) {
+                        val_rabais = 0;
+                    }
+                    var val_rabais_assurance = parseFloat($("#rabais_assurance").val());
+                    if (isNaN(val_rabais_assurance)) {
+                        val_rabais_assurance = 0;
+                    }
+
+                    let rr = (val_stotal * val_rabais) / 100;
+                    let ra = (val_stotal * val_rabais_assurance) / 100
+
+                    if (isNaN(rr)) {
+                        r = 0;
+                    }
+
+                    if (isNaN(ra)) {
+                        ra = 0
+                    }
+
+                    let totalRab = rr + ra;
+
+                    let valTotal = val_stotal - totalRab;
+
+                    $("#val_stotal").html(val_stotal)
+                    $("#val_rabais_assurance").html(ra)
+                    $("#val_rabais").html(rr)
+                    $("#val_total").html(valTotal);
+
+                    toastr.info(r.message);
+                } else {
+                    toastr.warning(r.message);
+                }
+            }
+        });
+    });
+
+    $(document).on('click', '.remove-to-cart', function (e) {
+        $("#ajax-loading").show();
+        var id = $(this).data("id");
+        e.preventDefault();
+        $.ajax({
+            url: "app/DefaultApp/traitements/produits.php?remove_panier=" + id,
+            type: "GET",
+            data: "",
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                $("#ajax-loading").hide();
+                var r = $.parseJSON(data);
+                $("#panier_produit").empty();
+                $("#panier_montant").empty();
+                $("#panier_produit").html(r.data);
+                var val_stotal = r.sousTotal
+                var val_rabais = parseFloat($("#rabais").val());
+                if (isNaN(val_rabais)) {
+                    val_rabais = 0;
+                }
+                var val_rabais_assurance = parseFloat($("#rabais_assurance").val());
+                if (isNaN(val_rabais_assurance)) {
+                    val_rabais_assurance = 0;
+                }
+
+                let rr = (val_stotal * val_rabais) / 100;
+                let ra = (val_stotal * val_rabais_assurance) / 100
+
+                if (isNaN(rr)) {
+                    r = 0;
+                }
+
+                if (isNaN(ra)) {
+                    ra = 0
+                }
+
+                let totalRab = rr + ra;
+
+                let valTotal = val_stotal - totalRab;
+
+                $("#val_stotal").html(val_stotal)
+                $("#val_rabais_assurance").html(ra)
+                $("#val_rabais").html(rr)
+                $("#val_total").html(valTotal);
+                toastr.info("produit retirer du panier");
+            }
+        });
+    });
+
+
+    $("#btn_payer").on("click", (function (e) {
+        var val_rabais = parseFloat($("#rabais").val());
+        var val_rabais_assurance = parseFloat($("#rabais_assurance").val());
+        var id_patient=$("#id_patient").val();
+        var id_medecin=$("#id_medecin").val()
+
+        let tyr=$(".tyr").val();
+        let tyra=$(".tyra").val();
+
+
+        if (isNaN(val_rabais)) {
+            val_rabais = 0;
+        }
+
+        if (isNaN(val_rabais_assurance)) {
+            val_rabais_assurance = 0
+        }
+
+        e.preventDefault();
+        $.ajax({
+            url: "app/DefaultApp/traitements/produits.php?modal&rabais=" + val_rabais + "&rabais_assurance=" + val_rabais_assurance+
+            "&id_patient="+id_patient+"&id_medecin="+id_medecin+"&tyr="+tyr+"&tyra="+tyra,
+            type: "GET",
+            data: "",
+            contentType: false,
+            cache: false,
+            processData: false,
+            success: function (data) {
+                $("#space_show_modal").empty().html(data);
+            }
+        });
+    }));
 
     $("#btn-reset-panier").on("click", (function (e) {
         $("#ajax-loading").show();
@@ -219,8 +509,11 @@ if (isset($contenue)) {
                 var r = $.parseJSON(data);
                 $("#liste_produits").empty();
                 $("#panier_produit").html(r.data);
-                $("#panier_montant").html(r.footer);
                 $("#liste_produits").html(r.produit);
+                $("#val_stotal").html(0)
+                $("#val_rabais").html(0)
+                $("#val_rabais_assurance").html(0)
+                $("#val_total").html(0)
                 toastr.info("panier vide");
             }
         });

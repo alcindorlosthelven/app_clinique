@@ -4,7 +4,6 @@ use systeme\Application\Application as App;
 if (!\systeme\Model\Utilisateur::session()) {
     app::redirection("logout");
 }
-$v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +36,16 @@ $v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
     <link href="../../../cdn.lineicons.com/2.0/LineIcons.css" rel="stylesheet" type="text/css"/>
     <link href="assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css"  rel="stylesheet" type="text/css"/>
     <link href="assets/css/style.css" class="main-css" rel="stylesheet" type="text/css"/>
-
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <style>
+        @media print
+        {
+            .no-print, .no-print *
+            {
+                display: none !important;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -60,10 +68,9 @@ $v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
 <div id="main-wrapper">
 
     <div class="nav-header">
-        <a href="index.html" class="brand-logo">
-            <img class="logo-abbr" src="assets/images/logo.png" alt="">
-            <img class="logo-compact" src="assets/images/logo-text.png" alt="">
-            <img class="brand-title" src="assets/images/logo-text.png" alt="">
+        <a href="" class="brand-logo"
+            <img style="width: 200px" class="logo-compact" src="<?= \app\DefaultApp\DefaultApp::autre("logo.png") ?>" alt="">
+            <img class="brand-title" src="<?= \app\DefaultApp\DefaultApp::autre("logo.png") ?>" alt="">
         </a>
         <div class="nav-control">
             <div class="hamburger">
@@ -615,7 +622,6 @@ $v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
             </div>
         </div>
     </div>
-
     <?= \app\DefaultApp\DefaultApp::block("entete_1") ?>
     <?= \app\DefaultApp\DefaultApp::block("menu_gauche") ?>
 
@@ -658,7 +664,6 @@ $v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
         </div>
     </div>
 
-
     <div class="content-body default-height default-height">
         <div class="container-fluid">
             <?php
@@ -668,35 +673,13 @@ $v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
     </div>
 
 
-
-    <!--**********************************
-        Footer start
-    ***********************************-->
     <div class="footer">
         <div class="copyright">
-            <p>Copyright © Designed &amp; Developed by <a href="http://dexignzone.com/" target="_blank">DexignZone</a> 2024</p>
+            <p>Copyright © Designed &amp; Developed by </p>
         </div>
-    </div>        <!--**********************************
-            Footer end
-        ***********************************-->
-
-    <!--**********************************
-       Support ticket button start
-    ***********************************-->
-
-    <!--**********************************
-       Support ticket button end
-    ***********************************-->
-
-
+    </div>
 </div>
-<!--**********************************
-    Main wrapper end
-***********************************-->
 
-<!--**********************************
-    Scripts
-***********************************-->
 <!-- Required vendors -->
 <script> var enableSupportButton = '1'</script>
 
@@ -708,11 +691,123 @@ $v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
 <script src="assets/js/deznav-init.js" type="text/javascript"></script>
 <script src="assets/js/demo.js" type="text/javascript"></script>
 <script src="assets/js/styleSwitcher.js" type="text/javascript"></script>
+<script src="<?= App::autre("assets/tinymce/tinymce.min.js") ?>"></script>
+<script src="<?=App::autre("assets/jquery-ui/jquery-ui.min.js")?>"></script>
+<script>
+    tinymce.init(
+        {
+            selector: '.editeur',
+            plugins: 'code print preview autosave directionality fullscreen image link media template table hr anchor lists  wordcount imagetools textpattern noneditable emoticons',
+            menubar: 'code file edit view insert format tools table tc help',
+            toolbar: 'textcolor backgroundcolor | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment forecolor backcolor',
+            custom_colors: false
+        }
+    );
+</script>
+
+
+
 <script>
 
     $("document").ready(function () {
         $("#load").hide();
         $("form").addClass("was-validated");
+
+        $('.dp1').datepicker({
+            "dateFormat": "yy-mm-dd"
+        })
+
+        $(".form_submit").on("submit",(function (e){
+            e.preventDefault();
+            $.ajax({
+                url: "app/DefaultApp/traitements/traitements.php",
+                type: "POST",
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    if(data.trim()==="ok"){
+                        alert("Fait avec success")
+                        location.reload()
+                    }else{
+                        $(".message").html("<div class='alert alert-warning'>"+data+"</div>")
+                    }
+                }
+            });
+        }))
+
+        $(".form_add_docteur").on("submit",(function (e){
+            e.preventDefault();
+            $.ajax({
+                url: "app/DefaultApp/traitements/traitements.php",
+                type: "POST",
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    if(data.trim()==="ok"){
+                        alert("Fait avec success")
+                        location.reload()
+                    }else{
+                        $(".message").html("<div class='alert alert-warning'>"+data+"</div>")
+                    }
+                }
+            });
+        }))
+
+        $(".specimen_imagerie").on('submit', (function (e) {
+            e.preventDefault();
+            $('#load').show();
+            $.ajax({
+                url: "app/DefaultApp/traitements/imagerie.php",
+                type: "POST",
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataTpe: "json",
+                success: function (data) {
+                    if (data.trim() == "ok") {
+                        $(".message").html("<div class='alert alert-success'>Fait avec success</div>");
+                        alert("Fait avec success");
+                        history.back();
+                    } else {
+                        $(".message").html("<div class='alert alert-success'>" + data.trim() + "</div>");
+
+                    }
+                    $('#load').hide();
+                }
+            });
+
+        }));
+
+        $(".fait_imagerie").on('submit', (function (e) {
+            e.preventDefault();
+            $('#load').show();
+            $.ajax({
+                url: "app/DefaultApp/traitements/imagerie.php",
+                type: "POST",
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                dataTpe: "json",
+                success: function (data) {
+                    if (data.trim() == "ok") {
+                        $(".message").html("<div class='alert alert-success'>Fait avec success</div>");
+                        alert("fait avec success");
+                        location.reload(true);
+                    } else {
+                        $(".message").html("<div class='alert alert-success'>" + data.trim() + "</div>");
+                    }
+                    $('#load').hide();
+                }
+
+            });
+        }));
+
 
         $(".nom").on("change", function () {
             $("#load").show();
@@ -760,6 +855,4 @@ $v=\app\DefaultApp\Models\Utilisateur::getEntreprise();
     });
 </script>
 </body>
-
-<!-- Mirrored from mediqu.dexignzone.com/php/demo/index.php by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 08 Jul 2024 14:24:20 GMT -->
 </html>

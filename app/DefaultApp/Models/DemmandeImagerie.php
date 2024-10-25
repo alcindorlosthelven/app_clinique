@@ -13,96 +13,7 @@ use systeme\Model\Model;
 class DemmandeImagerie extends Model
 {
     protected $table = "demmande_imagerie";
-    public $id, $id_patient, $date, $date_prelevement;
-    public $id_medecin, $statut;
-    public $id_admision;
-    public $no_dossier, $institution;
-    public $payer;
-    public $id_categorie, $id_imagerie, $id_medecin2, $remarque;
-    public $indication,$technicien,$id_assurance;
-
-    /**
-     * @return mixed
-     */
-    public function getNoDossier()
-    {
-        return $this->no_dossier;
-    }
-
-    /**
-     * @param mixed $no_dossier
-     */
-    public function setNoDossier($no_dossier)
-    {
-        $this->no_dossier = $no_dossier;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getInstitution()
-    {
-        return $this->institution;
-    }
-
-    /**
-     * @param mixed $institution
-     */
-    public function setInstitution($institution)
-    {
-        $this->institution = $institution;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getIdAdmision()
-    {
-        return $this->id_admision;
-    }
-
-    /**
-     * @param mixed $id_admision
-     */
-    public function setIdAdmision($id_admision)
-    {
-        $this->id_admision = $id_admision;
-    }
-
-
-    /**
-     * @return mixed
-     */
-    public function getIdMedecin()
-    {
-        return $this->id_medecin;
-    }
-
-    /**
-     * @param mixed $id_medecin
-     */
-    public function setIdMedecin($id_medecin)
-    {
-        $this->id_medecin = $id_medecin;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getStatut()
-    {
-        return $this->statut;
-    }
-
-    /**
-     * @param mixed $statut
-     */
-    public function setStatut($statut)
-    {
-        $this->statut = $statut;
-    }
-
+    public $id, $id_patient, $date, $date_prelevement,$id_medecin,$statut,$payer,$indication,$remarque,$technicien;
 
     /**
      * @return mixed
@@ -115,7 +26,7 @@ class DemmandeImagerie extends Model
     /**
      * @param mixed $id
      */
-    public function setId($id)
+    public function setId($id): void
     {
         $this->id = $id;
     }
@@ -131,7 +42,7 @@ class DemmandeImagerie extends Model
     /**
      * @param mixed $id_patient
      */
-    public function setIdPatient($id_patient)
+    public function setIdPatient($id_patient): void
     {
         $this->id_patient = $id_patient;
     }
@@ -147,10 +58,76 @@ class DemmandeImagerie extends Model
     /**
      * @param mixed $date
      */
-    public function setDate($date)
+    public function setDate($date): void
     {
         $this->date = $date;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getDatePrelevement()
+    {
+        return $this->date_prelevement;
+    }
+
+    /**
+     * @param mixed $date_prelevement
+     */
+    public function setDatePrelevement($date_prelevement): void
+    {
+        $this->date_prelevement = $date_prelevement;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIdMedecin()
+    {
+        return $this->id_medecin;
+    }
+
+    /**
+     * @param mixed $id_medecin
+     */
+    public function setIdMedecin($id_medecin): void
+    {
+        $this->id_medecin = $id_medecin;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatut()
+    {
+        return $this->statut;
+    }
+
+    /**
+     * @param mixed $statut
+     */
+    public function setStatut($statut): void
+    {
+        $this->statut = $statut;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPayer()
+    {
+        return $this->payer;
+    }
+
+    /**
+     * @param mixed $payer
+     */
+    public function setPayer($payer): void
+    {
+        $this->payer = $payer;
+    }
+
+
 
     public static function dernierId()
     {
@@ -162,20 +139,20 @@ class DemmandeImagerie extends Model
     }
 
 
-    public static function listeNa($id_categorie, $id_user = "", $institution = "")
+    public static function listeNa($id_user = "", $institution = "")
     {
         $con = self::connection();
         if ($institution == "") {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='n/a' and payer='oui' and id_categorie='{$id_categorie}'";
+                $req = "select *from demmande_imagerie WHERE statut='n/a' and payer='oui'";
             } else {
-                $req = "select *from demmande_imagerie WHERE statut='n/a' and payer='oui' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}'";
+                $req = "select *from demmande_imagerie WHERE statut='n/a' and payer='oui'  and id_medecin2='{$id_user}'";
             }
         } else {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='n/a' and institution='{$institution}' and payer='oui' and id_categorie='{$id_categorie}'";
+                $req = "select *from demmande_imagerie WHERE statut='n/a' and institution='{$institution}' and payer='oui' ";
             } else {
-                $req = "select *from demmande_imagerie WHERE statut='n/a' and institution='{$institution}' and payer='oui' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}'";
+                $req = "select *from demmande_imagerie WHERE statut='n/a' and institution='{$institution}' and payer='oui'  and id_medecin2='{$id_user}'";
             }
         }
         $stmt = $con->prepare($req);
@@ -183,20 +160,38 @@ class DemmandeImagerie extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
-    public static function listeEncour($id_categorie, $id_user = "", $institution = "")
+    public static function listeNaPatient($id_user)
+    {
+        $req = "select *from demmande_imagerie WHERE statut='n/a' and payer='oui'  and id_patient='{$id_user}'";
+        $con = self::connection();
+        $stmt = $con->prepare($req);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    }
+
+    public static function listeEncourPatient($id_user)
+    {
+        $req = "select *from demmande_imagerie WHERE statut='encour' and payer='oui' and id_patient='{$id_user}'";
+        $con = self::connection();
+        $stmt = $con->prepare($req);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    }
+
+    public static function listeEncour($id_user = "", $institution = "")
     {
         $con = self::connection();
         if ($institution == "") {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='encour'  and payer='oui' and id_categorie='{$id_categorie}' ";
+                $req = "select *from demmande_imagerie WHERE statut='encour'  and payer='oui'";
             } else {
-                $req = "select *from demmande_imagerie WHERE statut='encour' and payer='oui' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}'";
+                $req = "select *from demmande_imagerie WHERE statut='encour' and payer='oui' and id_medecin2='{$id_user}'";
             }
         } else {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='encour' and institution = '{$institution}' and payer='oui' and id_categorie='{$id_categorie}' ";
+                $req = "select *from demmande_imagerie WHERE statut='encour' and institution = '{$institution}' and payer='oui'";
             } else {
-                $req = "select *from demmande_imagerie WHERE statut='encour' and institution = '{$institution}' and payer='oui' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}'";
+                $req = "select *from demmande_imagerie WHERE statut='encour' and institution = '{$institution}' and payer='oui' and id_medecin2='{$id_user}'";
             }
         }
         $stmt = $con->prepare($req);
@@ -207,26 +202,26 @@ class DemmandeImagerie extends Model
     public static function listeEncour2()
     {
         $con = self::connection();
-        $req = "select *from demmande_imagerie WHERE statut='encour'";
+        $req = "select *from demmande_imagerie WHERE statut='encours'";
         $stmt = $con->prepare($req);
         $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+        return $stmt->fetchAll(\PDO::FETCH_OBJ);
     }
 
-    public static function listePret($id_categorie, $id_user = "", $institution = "")
+    public static function listePret($id_user = "", $institution = "")
     {
         $con = self::connection();
         if ($institution == "") {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='pret' and payer='oui' and id_categorie='{$id_categorie}'";
+                $req = "select *from demmande_imagerie WHERE statut='pret' and payer='oui'";
             } else {
-                $req = "select *from demmande_imagerie WHERE statut='pret' and payer='oui' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}'";
+                $req = "select *from demmande_imagerie WHERE statut='pret' and payer='oui'  and id_medecin2='{$id_user}'";
             }
         } else {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='pret' and institution = '{$institution}' and payer='oui' and id_categorie='{$id_categorie}'";
+                $req = "select *from demmande_imagerie WHERE statut='pret' and institution = '{$institution}' and payer='oui'";
             } else {
-                $req = "select *from demmande_imagerie WHERE statut='pret' and institution = '{$institution}' and payer='oui' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}'";
+                $req = "select *from demmande_imagerie WHERE statut='pret' and institution = '{$institution}' and payer='oui' and id_medecin2='{$id_user}'";
             }
         }
         $stmt = $con->prepare($req);
@@ -234,20 +229,29 @@ class DemmandeImagerie extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
-    public static function listeArchive($id_categorie, $id_user = "", $institution = "")
+    public static function listePretPatient($id_user)
+    {
+        $con = self::connection();
+        $req = "select *from demmande_imagerie WHERE statut='pret' and payer='oui'  and id_patient='{$id_user}'";
+        $stmt = $con->prepare($req);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    }
+
+    public static function listeArchive($id_user = "", $institution = "")
     {
         $con = self::connection();
         if ($institution == "") {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='archive' and id_categorie='{$id_categorie}'";
+                $req = "select *from demmande_imagerie WHERE statut='archive'";
             } else {
-                $req = "select *from demmande_imagerie WHERE statut='archive' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}'";
+                $req = "select *from demmande_imagerie WHERE statut='archive' and id_medecin2='{$id_user}'";
             }
         } else {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='archive' and institution = '{$institution}' and id_categorie='{$id_categorie}'";
+                $req = "select *from demmande_imagerie WHERE statut='archive' and institution = '{$institution}'";
             } else {
-                $req = "select *from demmande_imagerie WHERE statut='archive' and institution = '{$institution}' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}'";
+                $req = "select *from demmande_imagerie WHERE statut='archive' and institution = '{$institution}' and id_medecin2='{$id_user}'";
             }
         }
         $stmt = $con->prepare($req);
@@ -255,22 +259,31 @@ class DemmandeImagerie extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
-    public static function all($id_categorie, $id_user = "", $institution = "")
+    public static function all($id_user = "", $institution = "")
     {
         $con = self::connection();
         if ($institution == "") {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie where payer='oui'  and id_categorie='{$id_categorie}' order by id desc ";
+                $req = "select *from demmande_imagerie where payer='oui' order by id desc ";
             } else {
-                $req = "select *from demmande_imagerie where payer='oui'  and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}' order by id desc ";
+                $req = "select *from demmande_imagerie where payer='oui' and id_medecin2='{$id_user}' order by id desc ";
             }
         } else {
             if ($id_user == "") {
-                $req = "select *from demmande_imagerie where payer='oui' and institution = '{$institution}' and id_categorie='{$id_categorie}' order by id desc ";
+                $req = "select *from demmande_imagerie where payer='oui' and institution = '{$institution}' order by id desc ";
             } else {
-                $req = "select *from demmande_imagerie where payer='oui' and institution = '{$institution}' and id_categorie='{$id_categorie}' and id_medecin2='{$id_user}' order by id desc ";
+                $req = "select *from demmande_imagerie where payer='oui' and institution = '{$institution}' and id_medecin2='{$id_user}' order by id desc ";
             }
         }
+        $stmt = $con->prepare($req);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    }
+
+    public static function allPatient($id_user)
+    {
+        $con = self::connection();
+        $req = "select *from demmande_imagerie where payer='oui' and id_patient='{$id_user}' order by id desc ";
         $stmt = $con->prepare($req);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
@@ -411,13 +424,13 @@ class DemmandeImagerie extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
-    public static function listerParDate($date1, $date2, $id_categorie, $institution = "")
+    public static function listerParDate($date1, $date2,$institution = "")
     {
         $con = self::connection();
         if ($institution == "") {
-            $req = "select *from demmande_imagerie where date between '{$date1}' and '{$date2}' and payer='oui' and id_categorie='{$id_categorie}'";
+            $req = "select *from demmande_imagerie where date between '{$date1}' and '{$date2}' and payer='oui'";
         } else {
-            $req = "select *from demmande_imagerie where date between '{$date1}' and '{$date2}' and institution = '{$institution}' and payer='oui' and id_categorie='{$id_categorie}'";
+            $req = "select *from demmande_imagerie where date between '{$date1}' and '{$date2}' and institution = '{$institution}' and payer='oui'";
         }
         $stmt = $con->prepare($req);
         $stmt->execute();

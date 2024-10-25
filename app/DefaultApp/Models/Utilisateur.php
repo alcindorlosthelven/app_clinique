@@ -10,7 +10,7 @@ use systeme\Model\Model;
 class Utilisateur extends Model
 {
 
-    public $id, $nom, $prenom, $pseudo, $password, $role, $objet, $connect, $id_entreprise,$all_access;
+    public $id, $nom, $prenom, $pseudo, $password, $role, $objet, $connect, $id_entreprise, $all_access;
 
 
     /**
@@ -141,6 +141,7 @@ class Utilisateur extends Model
     {
         $this->objet = $objet;
     }
+
     public function __construct($objet = "utilisateur", $connect = "non")
     {
         $this->objet = $objet;
@@ -206,12 +207,12 @@ class Utilisateur extends Model
 
     public static function lastSup($id_entreprise)
     {
-        $con=self::connection();
-        $req="select *from utilisateur where role='superviseur' and id_entreprise='{$id_entreprise}' order by id desc limit 1";
-        $stmt=$con->prepare($req);
+        $con = self::connection();
+        $req = "select *from utilisateur where role='superviseur' and id_entreprise='{$id_entreprise}' order by id desc limit 1";
+        $stmt = $con->prepare($req);
         $stmt->execute();
-        $data=$stmt->fetchAll(\PDO::FETCH_OBJ);
-        if(count($data)>0){
+        $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+        if (count($data) > 0) {
             return $data[0];
         }
         return null;
@@ -226,7 +227,7 @@ class Utilisateur extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
-    public static function listeSuperviseurParId($id_entreprise,$id)
+    public static function listeSuperviseurParId($id_entreprise, $id)
     {
         $con = self::connection();
         $req = "select *from utilisateur where role='superviseur' and id_entreprise='{$id_entreprise}' and id='{$id}' order by id desc";
@@ -248,29 +249,25 @@ class Utilisateur extends Model
             ));
             $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
             if (count($data) > 0) {
-                if($data[0]->all_access=='oui') {
+                if ($data[0]->all_access == 'oui') {
                     self::setConnection($data[0]->id);
                     $data[0]->statut = "ok";
                     $_SESSION['utilisateur'] = $data[0]->id;
                     $_SESSION['pseudo'] = $data[0]->pseudo;
                     $_SESSION['role'] = $data[0]->role;
                     return "ok";
-                }else{
-                    $id_entreprise=$data[0]->id_entreprise;
-                    $en=new Entreprise();
-                    $en=$en->findById($id_entreprise);
-                    if($en!=null){
-                        if(!\app\DefaultApp\DefaultApp::isValide($en->date_expiration)){
-                            return "imposible de se connecter,compte inactif";
-                        }else{
-                            self::setConnection($data[0]->id);
-                            $data[0]->statut = "ok";
-                            $_SESSION['utilisateur'] = $data[0]->id;
-                            $_SESSION['pseudo'] = $data[0]->pseudo;
-                            $_SESSION['role'] = $data[0]->role;
-                            return "ok";
-                        }
-                    }else{
+                } else {
+                    $id_entreprise = $data[0]->id_entreprise;
+                    $en = new Entreprise();
+                    $en = $en->findById($id_entreprise);
+                    if ($en != null) {
+                        self::setConnection($data[0]->id);
+                        $data[0]->statut = "ok";
+                        $_SESSION['utilisateur'] = $data[0]->id;
+                        $_SESSION['pseudo'] = $data[0]->pseudo;
+                        $_SESSION['role'] = $data[0]->role;
+                        return "ok";
+                    } else {
                         return "imposible de se connecter , bank introuvable";
                     }
                 }
@@ -284,11 +281,11 @@ class Utilisateur extends Model
 
     public static function getEntreprise()
     {
-        $u=new Entreprise();
-        $id_user=\systeme\Model\Utilisateur::session_valeur();
-        $u=new Utilisateur();
-        $u=$u->findById($id_user);
-        if($u==null){
+        $u = new Entreprise();
+        $id_user = \systeme\Model\Utilisateur::session_valeur();
+        $u = new Utilisateur();
+        $u = $u->findById($id_user);
+        if ($u == null) {
             session_destroy();
             return "";
         }
@@ -339,10 +336,10 @@ class Utilisateur extends Model
         $con = self::connection();
         $req = "select *from utilisateur where id=:id and role='superviseur'";
         $stmt = $con->prepare($req);
-        $stmt->execute(array(":id"=>$id));
-        $data=$stmt->fetchAll(\PDO::FETCH_CLASS,__CLASS__);
+        $stmt->execute(array(":id" => $id));
+        $data = $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
 
-        if(count($data)>0){
+        if (count($data) > 0) {
             return $data[0];
         }
 
@@ -359,30 +356,32 @@ class Utilisateur extends Model
         return $data->id;
     }
 
-    public static function checkPassword($id,$password){
-        $password=md5($password);
-        $con=self::connection();
-        $req="select *from client where password=:password and id=:id";
-        $stmt=$con->prepare($req);
-        $stmt->execute(array(":password"=>$password,":id"=>$id));
-        $data=$stmt->fetchAll();
-        if(count($data)>0){
+    public static function checkPassword($id, $password)
+    {
+        $password = md5($password);
+        $con = self::connection();
+        $req = "select *from client where password=:password and id=:id";
+        $stmt = $con->prepare($req);
+        $stmt->execute(array(":password" => $password, ":id" => $id));
+        $data = $stmt->fetchAll();
+        if (count($data) > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public static function checkPasswordVendeur($id,$password){
-        $password=md5($password);
-        $con=self::connection();
-        $req="select *from vendeur where password=:password and id=:id";
-        $stmt=$con->prepare($req);
-        $stmt->execute(array(":password"=>$password,":id"=>$id));
-        $data=$stmt->fetchAll();
-        if(count($data)>0){
+    public static function checkPasswordVendeur($id, $password)
+    {
+        $password = md5($password);
+        $con = self::connection();
+        $req = "select *from vendeur where password=:password and id=:id";
+        $stmt = $con->prepare($req);
+        $stmt->execute(array(":password" => $password, ":id" => $id));
+        $data = $stmt->fetchAll();
+        if (count($data) > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

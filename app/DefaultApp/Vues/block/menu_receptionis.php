@@ -6,9 +6,15 @@
         </a>
     </li>
 
-    <li><a class="ai-icon" href="imagerie?gestion&rapport"  aria-expanded="false">
+    <li><a class="ai-icon" href="patient" aria-expanded="false">
             <i class="flaticon-381-networking"></i>
-            <span class="nav-text">Rapport</span>
+            <span class="nav-text">Patient</span>
+        </a>
+    </li>
+
+    <li><a class="ai-icon" href="imagerie?gestion" aria-expanded="false">
+            <i class="flaticon-381-networking"></i>
+            <span class="nav-text">Demmandes</span>
         </a>
     </li>
 

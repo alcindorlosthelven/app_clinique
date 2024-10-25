@@ -145,33 +145,35 @@ class Imagerie extends Model
     }
 
 
-    private function existe($nom){
-        try{
-            $con=self::connection();
-            $req="select *from imagerie where nom=:nom";
-            $stmt=$con->prepare($req);
+    private function existe($nom)
+    {
+        try {
+            $con = self::connection();
+            $req = "select *from imagerie where nom=:nom";
+            $stmt = $con->prepare($req);
             $stmt->execute(array(
-                ":nom"=>$nom
+                ":nom" => $nom
             ));
-            $data=$stmt->fetchAll();
-            if(count($data)>0){
+            $data = $stmt->fetchAll();
+            if (count($data) > 0) {
                 return true;
             }
             return false;
-        }catch (\Exception $ex){
+        } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
-    public function findByNom($nom){
-        $con=self::connection();
-        $req="select *from imagerie where nom=:nom";
-        $stmt=$con->prepare($req);
+    public function findByNom($nom)
+    {
+        $con = self::connection();
+        $req = "select *from imagerie where nom=:nom";
+        $stmt = $con->prepare($req);
         $stmt->execute(array(
-            ":nom"=>$nom
+            ":nom" => $nom
         ));
-        $data=$stmt->fetchAll(\PDO::FETCH_OBJ);
-        if(count($data)>0){
+        $data = $stmt->fetchAll(\PDO::FETCH_OBJ);
+        if (count($data) > 0) {
             return $data[0];
         }
         return null;
@@ -179,7 +181,7 @@ class Imagerie extends Model
 
     public function add()
     {
-        if($this->existe($this->nom)){
+        if ($this->existe($this->nom)) {
             return "Catégorie examens existe deja";
 
         }
@@ -199,5 +201,36 @@ class Imagerie extends Model
         }
     }
 
+    public static function listerByCategory($category = '0')
+    {
+        try {
+            $con = self::connection();
+            if ($category == '0') {
+                $req = "SELECT * FROM imagerie  order by nom ASC";
+            } else {
+                $req = "SELECT * FROM imagerie where id_categorie='" . $category . "' order by nom ASC";
 
+            }
+            $stmt = $con->prepare($req);
+            $stmt->execute();
+            $res = $stmt->fetchAll(\PDO::FETCH_CLASS, "app\DefaultApp\Models\Imagerie");
+            return $res;
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+
+    public static function RechercherBy($critere)
+    {
+        try {
+            $con = self::connection();
+            $req = "SELECT * FROM imagerie where  nom like '%" . $critere . "%' or nom_alternatif like '%" . $critere . "%' or devise like '%" . $critere . "%' or prix like '%" . $critere . "%'  order by nom ASC";
+            $stmt = $con->prepare($req);
+            $stmt->execute();
+            $res = $stmt->fetchAll(\PDO::FETCH_CLASS, "app\DefaultApp\Models\Imagerie");
+            return $res;
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
 }

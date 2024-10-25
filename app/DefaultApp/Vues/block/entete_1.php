@@ -1,6 +1,21 @@
 <?php
+
+
 $u=new \app\DefaultApp\Models\Utilisateur();
 $u=$u->findById(\systeme\Model\Utilisateur::session_valeur());
+if($u==null){
+    $u=new \app\DefaultApp\Models\PersonelMedical();
+    $u=$u->findById(\systeme\Model\Utilisateur::session_valeur());
+    if($u!=null){
+        $role=$u->type;
+    }else{
+        $u=new \app\DefaultApp\Models\Patient();
+        $u=$u->findById(\systeme\Model\Utilisateur::session_valeur());
+        $role="Patient";
+    }
+}else{
+    $role=$u->role;
+}
 ?>
 
 <div class="header">
@@ -9,7 +24,8 @@ $u=$u->findById(\systeme\Model\Utilisateur::session_valeur());
             <div class="collapse navbar-collapse justify-content-between">
                 <div class="header-left">
                     <div class="dashboard_bar">
-                        Dashboard					</div>
+                        Dashboard
+                    </div>
                 </div>
 
                 <ul class="navbar-nav header-right">
@@ -30,12 +46,16 @@ $u=$u->findById(\systeme\Model\Utilisateur::session_valeur());
                             </svg>
                         </a>
                     </li>
-                    <li class="nav-item dropdown notification_dropdown">
+
+                    <!--menu droit-->
+                    <!--<li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link bell bell-link" href="javascript:void(0);">
                             <i class="flaticon-381-pad"></i>
                         </a>
-                    </li>
-                    <li class="nav-item dropdown notification_dropdown">
+                    </li>-->
+
+                    <!--notification-->
+                    <!--<li class="nav-item dropdown notification_dropdown">
                         <a class="nav-link  ai-icon" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
                             <i class="flaticon-381-ring"></i>
                             <div class="pulse-css"></div>
@@ -113,24 +133,26 @@ $u=$u->findById(\systeme\Model\Utilisateur::session_valeur());
                             </div>
                             <a class="all-notification" href="javascript:void(0);">See all notifications <i class="ti-arrow-right"></i></a>
                         </div>
-                    </li>
+                    </li>-->
+
+                    <!--profil-->
                     <li class="nav-item dropdown header-profile">
                         <a class="nav-link" href="javascript:void(0);" role="button" data-bs-toggle="dropdown">
                             <div class="header-info">
                                 <span><?= ucfirst($u->nom) ?> <?= ucfirst($u->prenom) ?></span>
-                                <small><?= ucfirst($u->role) ?></small>
+                                <small><?= ucfirst($role) ?></small>
                             </div>
                             <img src="assets/images/profile/pic1.jpg" width="20" alt="">
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a href="app-profile.html" class="dropdown-item ai-icon">
+                            <a href="profil" class="dropdown-item ai-icon">
                                 <svg id="icon-user1" xmlns="http://www.w3.org/2000/svg" class="text-primary" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                                 <span class="ms-2">Profile </span>
                             </a>
-                            <a href="email-inbox.html" class="dropdown-item ai-icon">
+                            <a href="inbox" class="dropdown-item ai-icon">
                                 <svg id="icon-inbox" xmlns="http://www.w3.org/2000/svg" class="text-success" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                                     <polyline points="22,6 12,13 2,6"></polyline>

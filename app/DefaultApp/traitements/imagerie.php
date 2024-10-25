@@ -1,4 +1,7 @@
 <?php
+
+use app\sge\Models\Fichier;
+
 date_default_timezone_set("America/Port-au-Prince");
 require_once "../../../vendor/autoload.php";
 
@@ -250,13 +253,21 @@ if (isset($_POST['btnfait'])) {
     $examensDemandeImagerie=\app\DefaultApp\Models\ExamensDemandeImagerie::rechercher($id_demande,$id_examens);
     $examensDemandeImagerie->setRemarque($description);
     $examensDemandeImagerie->conclusion=$conclusion;
-    if(isset($_FILES['fichier']['name'])){
-        $fichier=new \app\DefaultApp\Models\Fichier($_FILES['fichier']['name'],"resultat_imagerie_$id_demande");
-        if($fichier->Upload()){
-            $examensDemandeImagerie->setResultat($fichier->getSrc());
+
+    $images=array();
+
+    $total = count($_FILES['fichier']['name']);
+    if($total>0) {
+        for ($i = 0; $i < $total; $i++) {
+            if (isset($_FILES['fichier']['name'][$i])) {
+                $fichier=new \app\DefaultApp\Models\Fichier($_FILES['fichier']['name'][$i],"img_$id_demande$i");
+                if($fichier->Upload($i)){
+                    $images[]=$fichier->getSrc();
+                }
+            }
         }
     }
-
+    $examensDemandeImagerie->setResultat(json_encode($images));
     $m=$examensDemandeImagerie->update();
     echo $m;
 }
@@ -332,7 +343,6 @@ if(isset($_POST['specimen'])){
         //echo "choisir au moins une examens";
     }
 }
-
 
 if(isset($_GET['getPrix'])){
     $nomLabo=$_GET['nom'];
