@@ -35,6 +35,8 @@ if ($patient == null) {
     echo "patient introuvable";
     return;
 }
+$anne_naisance=explode("-",$patient->date_naissance)[0];
+$age=date("Y")-$anne_naisance;
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -50,6 +52,7 @@ if ($patient == null) {
                     <strong>Prénom : </strong><?= ucfirst($patient->prenom) ?><br>
                     <strong>Date : </strong><?= $demandeImg->date_prelevement ?><br>
                     <strong>Date de Naissance : </strong><?= $patient->date_naissance ?><br>
+                    <strong>Age : </strong><?= $age ?> ans<br>
                 </p>
                 <div class="message"></div>
                 <div class="row">

@@ -171,7 +171,7 @@ $listeMed = $med->findAll();
                             <td>
                                 <a style="display: none" class="btn btn-warning btn-xs" href='<?= \app\DefaultApp\DefaultApp::genererUrl("ecrire_resultat_imagerie", ['id' => $ex->id]) ?>'>Resultat</a>
                                 <?php
-                                if(\systeme\Model\Utilisateur::role()=="médecin radiologue"){
+                                if(\systeme\Model\Utilisateur::role()=="médecin radiologue" || $role=="admin"){
                                     ?>
                                     <a class="btn btn-warning btn-xs" href='<?= \app\DefaultApp\DefaultApp::genererUrl("ecrire_resultat_imagerie", ['id' => $ex->id]) ?>'>Resultat</a>
                                     <?php
@@ -220,7 +220,6 @@ $listeMed = $med->findAll();
                                 </div>
                             </div>
                         </div>
-
                         <?php
                     }
                 }
@@ -300,8 +299,6 @@ $listeMed = $med->findAll();
                                             </button>
                                             <div class="dropdown-menu">
                                                 <a class="dropdown-item" href='<?= \app\DefaultApp\DefaultApp::genererUrl("prise_specimen_imagerie", ['id' => $ex->getId()]) ?>'>Technique</a>
-                                                <!-- <a class="dropdown-item delete" href='liste-demande-imagerie?examens&idcategorie=<?php /*= $_GET['idcategorie'] */?>&archive=<?php /*= $ex->id */?>'>Archive</a>
-                                            <a class="dropdown-item delete" href='liste-demande-imagerie?examens&idcategorie=<?php /*= $_GET['idcategorie'] */?>&supprimer=<?php /*= $ex->id */?>'>Supprimer</a>-->
                                             </div>
                                         </div>
                                     </div>

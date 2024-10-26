@@ -13,6 +13,8 @@
             echo "patient introuvable";
             return;
         }
+        $anne_naisance=explode("-",$patient->date_naissance)[0];
+        $age=date("Y")-$anne_naisance;
         ?>
         <div class="card">
             <div class="card-header"><h4>Technique</h4></div>
@@ -22,6 +24,8 @@
                     <strong>Nom : </strong><?= ucfirst($patient->nom) ?><br>
                     <strong>Prénom : </strong><?= ucfirst($patient->prenom) ?><br>
                     <strong>Date de Naissance : </strong><?= $patient->date_naissance ?><br>
+                    <strong>Age : </strong><?= $age ?> ans<br>
+
                 </p>
                 <hr>
                 <?php

@@ -21,6 +21,9 @@ App::get("/patient", "default.patient","patient");
 App::get("/prise-specimen-imagerie-:id", "default.priseSpecimen", "prise_specimen_imagerie")->avec("id", "[0-9]+");
 App::get("/ecrire-resultat-imagerie-:id", "default.ecrireResultat", "ecrire_resultat_imagerie")->avec("id", "[0-9]+");
 App::get("/afficher-resultat-imagerie-:id", "default.afficherResultat", "afficher_resultat_imagerie")->avec("id", "[0-9]+");
+App::get("/print-imagerie", "print.imagerie", "print_imagerie");
+App::get("/image-imagerie", "print.imagesImagerie", "image_imagerie");
+
 App::get("/inbox", "default.inbox","inbox");
 App::get("/profil", "default.profil","profi");
 

@@ -35,6 +35,7 @@ use Endroid\QrCode\Writer\PngWriter;
 if (!isset($id)) {
     return;
 }
+
 $demande = new \app\DefaultApp\Models\DemmandeImagerie();
 $demande = $demande->findById($id);
 if ($demande == null) {
@@ -62,7 +63,7 @@ $ima = new \app\DefaultApp\Models\Imagerie();
 $ima = $ima->findById($datax->getIdImagerie());
 $id_examen = $ima->getId();
 $nomImg = $ima->getNom();
-$lien="https://app.integra-sante.com/images-demmande?id=".$demande->id;
+$lien="https://app.integra-sante.com/image-imagerie?id=".$demande->id;
 $result = Builder::create()
     ->writer(new PngWriter())
     ->data($lien)  // Remplacez par le texte ou l'URL que vous souhaitez encoder
@@ -78,11 +79,12 @@ $age=date("Y")-$anne_naisance;
     <div class="col-md-12">
         <div class="no-print">
             <?php \systeme\Application\Application::block("menu_imagerie") ?>
-
         </div>
         <div class="card" style="margin:0px;padding: 0px;">
             <div class="card-header no-print">
                 Resultat # <?= $id; ?>
+                <a target="_blank" href="image-imagerie?id=<?=$id?>" class="btn btn-primary">Voir image</a>
+                <a target="_blank" class="btn btn-primary no-print" href="print-imagerie?id=<?=$id?>">Imprimer</a>
             </div>
             <div class="card-body">
                 <center class="no-print" style="display: none">
@@ -126,7 +128,6 @@ $age=date("Y")-$anne_naisance;
                     <div style="float: right;border-top: 3px solid black"></div>
                 </div>
             </div>
-            <button onclick="window.print()" class="btn btn-primary btn-block no-print">Imprimer</button>
         </div>
     </div>
 </div>
