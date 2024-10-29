@@ -158,7 +158,7 @@ if (isset($_GET['liste-commande'])) {
                                 <h5 class="fs-5 mb-2  text-gray-600">Rabais : <span id="val_rabais">0</span></h5>
                                 <h5 class="fs-5 mb-2  text-gray-600">Rabais assurance : <span id="val_rabais_assurance">0</span>
                                 </h5>
-                                <h3 class="fs-1 mb-2 text-gray-800">Total : <span id="val_total"><?= $total ?></span></h3>
+                                <h3 class="fs-1 mb-2 text-gray-800">Total : HTG <span id="val_total"> <?= $total ?></span></h3>
                             </div>
 
                         </div>

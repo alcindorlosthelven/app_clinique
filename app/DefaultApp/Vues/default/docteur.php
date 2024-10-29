@@ -1,4 +1,5 @@
 <?php
+$role=\systeme\Model\Utilisateur::role();
 $d=new \app\DefaultApp\Models\PersonelMedical();
 if(isset($_GET['del'])){
     $id=$_GET['del'];
@@ -73,8 +74,14 @@ $liste=$d->findAll();
                                                 </div>
                                             </div>
                                             <div class="social-media">
-                                                <a data-bs-toggle="modal" data-bs-target="#mx-<?= $d->id ?>" href="javascript:void(0);" class="btn btn-outline-primary btn-rounded btn-sm"><i class="fa fa-edit"></i></a>
-                                                <a href="medecin?del=<?= $d->id ?>" class="btn btn-outline-danger btn-rounded btn-sm"><i class="fa fa-remove"></i></a>
+                                                <?php
+                                                if($role=="admin"){
+                                                    ?>
+                                                    <a data-bs-toggle="modal" data-bs-target="#mx-<?= $d->id ?>" href="javascript:void(0);" class="btn btn-outline-primary btn-rounded btn-sm"><i class="fa fa-edit"></i></a>
+                                                    <a href="medecin?del=<?= $d->id ?>" class="btn btn-outline-danger btn-rounded btn-sm"><i class="fa fa-remove"></i></a>
+                                                    <?php
+                                                }
+                                                ?>
                                             </div>
                                         </div>
                                     </div>

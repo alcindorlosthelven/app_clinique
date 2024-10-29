@@ -273,74 +273,65 @@ if (isset($_POST['btnfait'])) {
 }
 
 if(isset($_POST['specimen'])){
+    $con=\app\DefaultApp\DefaultApp::connection();
+    $con->beginTransaction();
     $id_demande=$_POST['id_demande'];
     $lep=\app\DefaultApp\Models\ExamensDemandeImagerie::listerParDemmande($id_demande);
     $demmande = new \app\DefaultApp\Models\DemmandeImagerie();
+
+
     $demmande = $demmande->findById($id_demande);
     $demmande->date_prelevement=$_POST['date'];
     $demmande->remarque=trim(addslashes($_POST['remarque']));
     $demmande->indication=trim(addslashes($_POST['indication']));
     $demmande->statut="encour";
     $demmande->technicien=\systeme\Model\Utilisateur::session_valeur();
+
+
+    $images=array();
+    $total = count($_FILES['fichier']['name']);
+    if($total>0) {
+        for ($i = 0; $i < $total; $i++) {
+            if (isset($_FILES['fichier']['name'][$i])) {
+                $fichier=new \app\DefaultApp\Models\Fichier($_FILES['fichier']['name'][$i],"img_$id_demande$i");
+                if($fichier->Upload($i)){
+                    $images[]=$fichier->getSrc();
+                }
+            }
+        }
+    }
+
+    $av=0;
+
     foreach ($lep as $l){
         if(isset($_POST['ex-'.$l->getIdImagerie()])){
+            $av++;
             $id_examen=$l->getIdImagerie();
             $exdl=\app\DefaultApp\Models\ExamensDemandeImagerie::rechercher($id_demande,$id_examen);
             $exdl->setStatut(1);
+            $exdl->resultat=json_encode($images);
             $m=$exdl->update();
-            /*if($m=="ok"){
-                $id_admision = $demmande->getIdAdmision();
-                $labo=new \app\DefaultApp\Models\Imagerie();
-                $labo=$labo->findById($id_examen);
-                if ($id_admision != "n/a") {
-                    $admision=new \app\DefaultApp\Models\Admision();
-                    $admision=$admision->findById($id_admision);
-                    $service=$admision->getServiceActuel();
-                    $facture=\app\DefaultApp\Models\Facture::rechercherParAdmision($id_admision);
-                    $item_facture = new \app\DefaultApp\Models\FactureItemDirect();
-                    $item_facture->setIdFacture($facture->getId());
-                    $item_facture->setIdItem($id_examen);
-                    $item_facture->setCategorieItem("imagerie");
-                    $item_facture->setQuantite(1);
-                    $item_facture->setPrix($labo->getPrix());
-                    $item_facture->setIdBdc("n/a");
-                    $item_facture->setJour(date("Y-m-d"));
-                    $item_facture->setCouvert("oui");
-                    $ser = new \app\DefaultApp\Models\Service();
-                    $ser = $ser->findById($service);
-                    $nom_service = $ser->getSigle();
-
-                    if ($nom_service == "SSH") {
-                        $item_facture->setQtSsh(1);
-                        $item_facture->setQtSsc(0);
-                        $item_facture->setQtSsu(0);
-                    }
-                    if ($nom_service == "SSU") {
-                        $item_facture->setQtSsh(0);
-                        $item_facture->setQtSsc(0);
-                        $item_facture->setQtSsu(1);
-                    }
-                    if ($nom_service == "SSC") {
-                        $item_facture->setQtSsh(0);
-                        $item_facture->setQtSsc(1);
-                        $item_facture->setQtSsu(0);
-                    }
-                    $m=$item_facture->add();
-                }
-            }*/
         }
     }
+
+    if($av==0){
+        $con->rollBack();
+        echo "Choisir un examen";
+        return;
+    }
+
     if(isset($m)){
         if($m=="ok"){
             $demmande->update();
             echo "ok";
+            $con->commit();
         }else{
+            $con->rollBack();
             echo $m;
         }
     }else{
-        $demmande->update();
-        echo "ok";
-        //echo "choisir au moins une examens";
+        $con->rollBack();
+        echo "Choisir un examen";
     }
 }
 

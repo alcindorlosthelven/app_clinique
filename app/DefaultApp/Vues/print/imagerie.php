@@ -53,11 +53,15 @@ $age=date("Y")-$anne_naisance;
 <div class="container-fluid" style="border: 1px solid black;height: 1055px;font-size: 11px">
     <div class="col-12">
         <div class="entete">
+            <img style="float:right;margin-top: 25px" src="<?= $result->getDataUri(); ?>">
             <img alt="" style="height: 100px;text-align: center" src="<?= $logo ?>">
-            <img style="float:right;" src="<?= $result->getDataUri(); ?>">
+            <p style="font-weight: bold;margin-left: 20px">
+                No 3 Rue Gabart, Pétion Ville Haiti<br>
+                Téléphone : +509 47147474
+            </p>
         </div>
         <br>
-        <div style="border-bottom: 3px solid black"></div>
+        <div style="border-bottom: 1px solid black;margin-top: -30px"></div>
         <div class="milieu">
             <br>
             <p style="float: right;margin-right: 150px">
@@ -72,7 +76,7 @@ $age=date("Y")-$anne_naisance;
                 <strong>Examen : </strong> <?= $nomImg ?><br>
             </p>
         </div>
-        <div style="border-bottom: 3px solid black"></div>
+        <div style="border-bottom: 1px solid black"></div>
         <div class="">
             <?php
             if ($datax->getStatut() != "n/a") {
@@ -108,11 +112,6 @@ $age=date("Y")-$anne_naisance;
         </div>
 
         <br>
-
-        <p style="text-align: center;font-weight: bold">
-            No 3 Rue Gabart, Pétion Ville Haiti<br>
-            Téléphone : +509 47147474
-        </p>
 
     </div>
 

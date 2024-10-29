@@ -2,6 +2,7 @@
 
 use app\DefaultApp\Models\AccesUser;
 
+$role = \systeme\Model\Utilisateur::role();
 $cache = "display:none";
 $aficher = "display:inline";
 ?>
@@ -36,7 +37,16 @@ $aficher = "display:inline";
                                         <td><?= $utilisateur->getPrenom() ?></td>
                                         <td><?= $utilisateur->getPseudo(); ?></td>
                                         <td><?= $utilisateur->role ?></td>
-                                        <td><a href="modifier-utilisateur-<?= $utilisateur->getId() ?>"><i class="fa fa-edit"></i></a></td>
+                                        <td>
+                                            <?php
+                                            if ($role == "admin") {
+                                                ?>
+                                                <a href="modifier-utilisateur-<?= $utilisateur->getId() ?>"><i
+                                                            class="fa fa-edit"></i></a>
+                                                <?php
+                                            }
+                                            ?>
+                                        </td>
                                     </tr>
                                     <?php
                                 }
@@ -46,12 +56,9 @@ $aficher = "display:inline";
                         echo "Variabl listeEleve existe pas";
                     }
                     ?>
-
                     </tbody>
                 </table>
             </div>
         </div>
-
-
     </div>
 </div>

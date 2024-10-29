@@ -104,7 +104,7 @@ $liste=$f->listeParDate($date1,$date2);
                             <td><?= \app\DefaultApp\DefaultApp::formatComptable($l->montant) ?></td>
                             <td><?= \app\DefaultApp\DefaultApp::formatComptable($l->rabais) ?></td>
                             <td><?= \app\DefaultApp\DefaultApp::formatComptable($l->montant_apres_rabais) ?></td>
-                            <td><?= \app\DefaultApp\DefaultApp::formatComptable($l->montant_apres_rabais+$l->monnaie) ?></td>
+                            <td><?= \app\DefaultApp\DefaultApp::formatComptable(floatval($l->montant_apres_rabais)+(floatval($l->monnaie))) ?></td>
                             <td><?= $l->monnaie ?></td>
                             <td><?= $l->note ?></td>
 

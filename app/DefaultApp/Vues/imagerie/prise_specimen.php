@@ -48,6 +48,12 @@
                         <label>Date</label>
                         <input name="date" type="text" value="<?= date('Y-m-d') ?>" class="form-control dp1" required>
                     </div>
+
+                    <div class="form-group">
+                        <label>Fichier</label>
+                        <input accept="image/*" multiple type="file" name="fichier[]" class="form-control" required>
+                    </div>
+
                     <table class="table table-bordered" style="">
                         <thead>
                         <tr>

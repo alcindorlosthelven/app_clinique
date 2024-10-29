@@ -1,7 +1,6 @@
 <?php
-
 use app\DefaultApp\Models\AccesUser;
-
+$role=\systeme\Model\Utilisateur::role();
 $cache = "display:none";
 $aficher = "display:inline";
 
@@ -49,12 +48,18 @@ $listePatient = $p->findAll();
                                     <td><?= $p->email ?></td>
                                     <td><?= \app\DefaultApp\DefaultApp::formatComptable($p->balance) ?></td>
                                     <td>
-                                        <a data-bs-toggle="modal" data-bs-target="#mx-<?= $p->id ?>"
-                                           href="javascript:void(0);"
-                                           class="btn btn-outline-primary btn-rounded btn-sm"><i class="fa fa-edit"></i></a>
-                                        <a href="medecin?del=<?= $p->id ?>"
-                                           class="btn btn-outline-danger btn-rounded btn-sm"><i
-                                                    class="fa fa-remove"></i></a>
+                                        <?php
+                                        if($role=="admin"){
+                                            ?>
+                                            <a data-bs-toggle="modal" data-bs-target="#mx-<?= $p->id ?>"
+                                               href="javascript:void(0);"
+                                               class="btn btn-outline-primary btn-rounded btn-sm"><i class="fa fa-edit"></i></a>
+                                            <a href="medecin?del=<?= $p->id ?>"
+                                               class="btn btn-outline-danger btn-rounded btn-sm"><i
+                                                        class="fa fa-remove"></i></a>
+                                        <?php
+                                        }
+                                        ?>
                                     </td>
                                 </tr>
 

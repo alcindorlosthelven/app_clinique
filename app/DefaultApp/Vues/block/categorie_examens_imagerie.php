@@ -1,10 +1,13 @@
-<a href="imagerie?administration&categorie&ajouter" class="btn btn-primary btn-xs">Ajouter</a>
-<a href="imagerie?administration&categorie" class="btn btn-warning btn-xs">Lister</a>
-<hr>
 <?php
-
+$role=\systeme\Model\Utilisateur::role();
+if($role=="admin"){
+    ?>
+    <a href="imagerie?administration&categorie&ajouter" class="btn btn-primary btn-xs">Ajouter</a>
+    <a href="imagerie?administration&categorie" class="btn btn-warning btn-xs">Lister</a>
+    <hr>
+<?php
+}
 use app\DefaultApp\Models\CategorieExamensImagerie;
-
 if(isset($_GET['ajouter'])){
     if(isset($_POST['ajouter'])){
         $obj=new CategorieExamensImagerie();
@@ -103,8 +106,14 @@ if(isset($_GET['ajouter'])){
                     <td><?= $catE->getId() ?></td>
                     <td><?= $catE->getCategorie(); ?></td>
                     <th>
-                        <a class="btn btn-xs btn-success" href="imagerie?administration&categorie&modifier=<?= $catE->id ?>">Modifier</a>
-                        <a class="btn btn-xs btn-warning" href="imagerie?administration&categorie&delete=<?= $catE->id ?>">Supprimer</a>
+                        <?php
+                        if($role=="admin"){
+                            ?>
+                            <a class="btn btn-xs btn-success" href="imagerie?administration&categorie&modifier=<?= $catE->id ?>">Modifier</a>
+                            <a class="btn btn-xs btn-warning" href="imagerie?administration&categorie&delete=<?= $catE->id ?>">Supprimer</a>
+                            <?php
+                        }
+                        ?>
                     </th>
                 </tr>
                 <?php
