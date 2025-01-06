@@ -77,8 +77,8 @@ if ($fiche1 !== null) {
                 </table>
                 <div style="text-align: center">
                     <?= $fiche1->note ?><br>
-                    lien images  <br>
-                    https://app.integra-sante.com/image-imagerie
+                    Consulter resultat  <br>
+                    https://app.integra-sante.com/consulter-resultat
                 </div>
             </page>
         </div>

@@ -8,5 +8,7 @@ if ($role == "admin") {
     require_once "dash_medecin.php";
 } elseif ($role == "médecin radiologue") {
     require_once "dash_medecin.php";
+}else{
+    require_once "dash_all.php";
 }
 ?>

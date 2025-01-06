@@ -35,8 +35,8 @@ if ($patient == null) {
     echo "patient introuvable";
     return;
 }
-$anne_naisance=explode("-",$patient->date_naissance)[0];
-$age=date("Y")-$anne_naisance;
+$anne_naisance = explode("-", $patient->date_naissance)[0];
+$age = date("Y") - $anne_naisance;
 ?>
 <div class="row">
     <div class="col-md-12">
@@ -62,7 +62,7 @@ $age=date("Y")-$anne_naisance;
                             ?>
                             <div style="text-align: center;">
                                 <a href="ecrire-resultat-imagerie-<?php echo $id_demande ?>&terminer&id=<?= $id_demande ?>"
-                                   class="btn btn-success" style="z-index: 1">Finaliser demmande</a>
+                                   class="btn btn-success" style="z-index: 1">Finaliser demande</a>
                             </div>
                             <br>
                             <br>
@@ -85,16 +85,16 @@ $age=date("Y")-$anne_naisance;
                         <h3>Indication</h3>
                         <p><?= stripslashes($demandeImg->indication) ?></p>
                         <?php
-                        if ($statut == "pret") {
-                            if (AccesUser::haveAcces("2.6.3.5.6")) {
-                            } else {
-                                ?>
+                        /* if ($statut == "pret") {
+                             if (AccesUser::haveAcces("2.6.3.5.6")) {
+                             } else {
+                                 */ ?><!--
                                 <script>
-                                    document.location.href = "afficher-resultat-imagerie-<?= $demandeImg->getId(); ?>";
+                                    document.location.href = "afficher-resultat-imagerie-<?php /*= $demandeImg->getId(); */ ?>";
                                 </script>
-                                <?php
-                            }
-                        }
+                                --><?php
+                        /*                            }
+                                                }*/
                         foreach ($req as $datax) {
                             if ($datax->getStatut() != "n/a") {
                                 $ima = new \app\DefaultApp\Models\Imagerie();
@@ -113,14 +113,15 @@ $age=date("Y")-$anne_naisance;
                                             <h4><?= strtoupper($nomImg) ?></h4>
                                             <?php
                                             if (\app\DefaultApp\Models\DemmandeImagerie::imagerieDejaFait($id_demande, $id_examen)) {
-                                                $images=json_decode($datax->resultat);
+                                                $images = json_decode($datax->resultat);
                                                 ?>
                                                 <center>
                                                     <?php
-                                                    if(count($images)>0){
-                                                        foreach ($images as $img){
+                                                    if (count($images) > 0) {
+                                                        foreach ($images as $img) {
                                                             ?>
-                                                            <a target="_blank" href="<?= $img ?>"><img src="<?= $img ?>" style="height: 100px"></a>
+                                                            <a target="_blank" href="<?= $img ?>"><img src="<?= $img ?>"
+                                                                                                       style="height: 100px"></a>
 
                                                             <?php
                                                         }
@@ -131,20 +132,20 @@ $age=date("Y")-$anne_naisance;
                                             }
                                             ?>
                                             <label>Fichier</label>
-                                            <input accept="image/*" multiple type="file" name="fichier[]" class="form-control" required>
+                                            <input accept="image/*" multiple type="file" name="fichier[]"
+                                                   class="form-control">
                                         </div>
 
                                         <div class="form-group">
-                                            <label>Description</label>
-                                            <textarea name="description" class="editeur">
+                                            <textarea name="description" class="editeur" style="height: 500px">
                                             <?= stripslashes($datax->remarque) ?>
-                                        </textarea>
+                                             </textarea>
                                         </div>
 
-                                        <div class="form-group">
+                                        <div class="form-group" style="display: none">
                                             <label>Impression</label>
-                                            <textarea name="conclusion" class="editeur">
-                                            <?= stripslashes($datax->conclusion) ?>
+                                            <textarea name="conclusion" class="editeurx">
+                                            ..
                                         </textarea>
                                         </div>
 

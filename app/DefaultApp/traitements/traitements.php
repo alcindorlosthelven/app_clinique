@@ -39,7 +39,7 @@ if(isset($_POST['ajouter_patient'])){
     $p->date_naissance=$_POST['date_naissance'];
     $p->telephone=$_POST['telephone'];
     $p->email=$_POST['email'];
-    $p->sexe="m";
+    $p->sexe=$_POST['sexe'];
     $p->password=md5("1234");
     $m=$p->add();
     echo $m;
@@ -56,7 +56,7 @@ if(isset($_POST['update_patient'])){
     $p->date_naissance=$_POST['date_naissance'];
     $p->telephone=$_POST['telephone'];
     $p->email=$_POST['email'];
-    $p->sexe="m";
+    $p->sexe=$_POST['sexe'];
     $m=$p->update();
     echo $m;
 }

@@ -53,6 +53,7 @@ if (isset($_GET['liste-commande'])) {
                                     <div class=" css-1s2u09g-control">
                                         <label>Médecin</label>
                                         <select class="form-control" id="id_medecin">
+                                            <option value=""></option>
                                             <?php
                                             foreach ($listeMed as $med) {
                                                 ?>

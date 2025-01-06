@@ -17,4 +17,11 @@ class PrintControlleur extends Controlleur
     {
         return $this->render("print/images_imageries");
     }
+
+    public function consulterResultat()
+    {
+        return $this->render("print/consulter_resultat");
+    }
+
+
 }

@@ -124,6 +124,19 @@ class Patient extends Model
     }
 
 
+    public static function rechercherParNomFamilleDateNaissance($nom, $date_naissance)
+    {
+        $con = self::connection();
+        $req = "SELECT *FROM patient WHERE nom='{$nom}' and date_naissance='{$date_naissance}'";
+        $stmt=$con->prepare($req);
+        $stmt->execute();
+        $data=$stmt->fetchAll(\PDO::FETCH_OBJ);
+        if(count($data)>0){
+            return $data[0];
+        }
+        return null;
+    }
+
     public function existe($nom, $prenom)
     {
         $con = self::connection();

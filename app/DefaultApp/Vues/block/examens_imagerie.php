@@ -1,20 +1,42 @@
 <?php
 
 use app\DefaultApp\Models\AccesUser;
-$role=\systeme\Model\Utilisateur::role();
-$idu=\systeme\Model\Utilisateur::session_valeur();
+
+$role = \systeme\Model\Utilisateur::role();
+$idu = \systeme\Model\Utilisateur::session_valeur();
 $id_user = "";
-if (isset($_GET['supprimer'])) {
-    $id = $_GET['supprimer'];
+if (isset($_POST['delete_demmande'])) {
+    $id = $_POST['id'];
+    $raison = $_POST['raison'];
     $de = new \app\DefaultApp\Models\DemmandeImagerie();
-    $de->deleteById($id);
+    $de = $de->findById($id);
+    $de->statut = "supprimer";
+    $de->raison_suppression = $raison;
+    $de->update();
     ?>
     <script>
         alert("supprimer avec success");
-        location.href = "liste-demande-imagerie?examens&idcategorie=<?= $_GET['idcategorie'] ?>";
+        location.href = "imagerie?gestion&demmande";
     </script>
     <?php
 }
+
+if(isset($_POST['ajouter_medecin'])){
+    $id = $_POST['id'];
+    $de = new \app\DefaultApp\Models\DemmandeImagerie();
+    $de = $de->findById($id);
+    $id_medecin=$de->id_medecin;
+    $id_medecin.=",".$_POST['medecin'];
+    $de->id_medecin=$id_medecin;
+    $de->update();
+    ?>
+    <script>
+        alert("medecin ajouter avec success");
+        location.href = "imagerie?gestion&demmande";
+    </script>
+    <?php
+}
+
 
 if (isset($_GET['archive'])) {
     $id = $_GET['archive'];
@@ -61,24 +83,73 @@ $listeMed = $med->findAll();
 <div class="card">
     <div class="card-body">
         <?php
-        if(\systeme\Model\Utilisateur::role()=="comptabilité"){
+        if (\systeme\Model\Utilisateur::role() == "comptabilité") {
             ?>
 
             <?php
-        }else{
+        } else {
             ?>
             <a href="imagerie?gestion&demmande" class="btn btn-outline-primary btn-xs">Demmande</a>
             <a href="imagerie?gestion&encour" class="btn btn-outline-primary btn-xs">En cours</a>
             <a href="imagerie?gestion&pret" class="btn btn-outline-primary btn-xs">Prêt</a>
             <a href="imagerie?gestion&tous" class="btn btn-outline-primary btn-xs">Tous</a>
             <a href="imagerie?gestion&archives" class="btn btn-outline-primary btn-xs">Archive</a>
+            <a href="imagerie?gestion&supprimer_x" class="btn btn-outline-primary btn-xs">Supprimer</a>
             <a href="imagerie?gestion&rapport" class="btn btn-outline-primary btn-xs">Rapport</a>
-        <?php
+            <?php
         }
         ?>
-
         <hr>
         <?php
+        if (isset($_GET['supprimer'])) {
+            ?>
+            <form method="post">
+                <input type="hidden" name="delete_demmande">
+                <input type="hidden" name="id" value="<?= $_GET['supprimer'] ?>">
+                <div class="form-group">
+                    <label>Raison de suppression</label>
+                    <select class="form-control" name="raison">
+                        <option value="raison 1">Raison 1</option>
+                        <option value="raison 2">Raison 2</option>
+                        <option value="raison 3">Raison 3</option>
+                        <option value="raison 4">Raison 4</option>
+                    </select>
+                </div>
+                <input type="submit" value="Valider" class="btn btn-primary btn-xs btn-block">
+            </form>
+
+            <?php
+            return;
+        }
+
+        if (isset($_GET['lyezon'])) {
+            $med=new \app\DefaultApp\Models\PersonelMedical();
+            $listeMed=$med->findAll();
+            ?>
+            <h4>Ajouter médecin</h4>
+            <form method="post">
+                <input type="hidden" name="ajouter_medecin">
+                <input type="hidden" name="id" value="<?= $_GET['lyezon'] ?>">
+                <div class="form-group">
+                    <label>Médecin</label>
+                    <select class="form-control" name="medecin">
+                        <?php
+                        foreach ($listeMed as $me){
+                            ?>
+                            <option value="<?= $me->id ?>"><?= $me->nom." ".$me->prenom ?></option>
+                        <?php
+                        }
+                        ?>
+                    </select>
+                </div>
+                <input type="submit" value="Valider" class="btn btn-primary btn-xs btn-block">
+            </form>
+
+            <?php
+            return;
+        }
+
+
         $patient = new \app\DefaultApp\Models\Patient();
         $medecin = new \app\DefaultApp\Models\PersonelMedical();
         if (isset($_GET['encour'])) {
@@ -92,7 +163,7 @@ $listeMed = $med->findAll();
                     <th>Patient</th>
                     <th>Examens</th>
                     <th>Médecin</th>
-                    <th>Date demmande</th>
+                    <th>Date demande</th>
                     <th>Date technique</th>
                     <th>Statut</th>
                     <th></th>
@@ -115,9 +186,9 @@ $listeMed = $med->findAll();
                         }
                     }
                 }
-                if(\systeme\Model\Utilisateur::role()=="patient"){
+                if (\systeme\Model\Utilisateur::role() == "patient") {
                     $liste = \app\DefaultApp\Models\DemmandeImagerie::listeEncourPatient($idu);
-                }else{
+                } else {
                     $liste = \app\DefaultApp\Models\DemmandeImagerie::listeEncour($id_user);
                 }
                 if (count($liste) > 0) {
@@ -129,24 +200,24 @@ $listeMed = $med->findAll();
                         $id_patient = $ex->getIdPatient();
                         if ($id_patient != "") {
                             $patient = $patient->findById($id_patient);
-                            if($patient!=null){
+                            if ($patient != null) {
                                 $nomPatient = $patient->getNom() . " " . $patient->getPrenom();
-                            }else{
-                                $nomPatient="";
+                            } else {
+                                $nomPatient = "";
                             }
                         } else {
                             $nomPatient = "";
                         }
 
-                        $idmedecin = $ex->id_medecin;
-                        if (intval($idmedecin) == 0) {
-                            $nomMedecin = $idmedecin;
-                        } else {
-                            $med = $medecin->findById($idmedecin);
-                            if($med!=null) {
-                                $nomMedecin = $med->getNom() . " " . $med->getPrenom();
-                            }else{
-                                $nomMedecin="";
+                        $nomMedecin="";
+                        $mta=explode(",",$ex->id_medecin);
+                        if(is_array($mta)){
+                            foreach ($mta as $mt){
+                                $p=new \app\DefaultApp\Models\PersonelMedical();
+                                $p=$p->findById($mt);
+                                if($p!=null){
+                                    $nomMedecin.=$p->nom." ".$p->prenom."<br>";
+                                }
                             }
                         }
                         ?>
@@ -161,19 +232,22 @@ $listeMed = $med->findAll();
                                 <?= $statut ?>
                                 <br>
                                 <?php
-                                if($role!="patient"){
+                                if ($role != "patient") {
                                     ?>
-                                    <a href="imagerie?gestion&encour&an=<?= $ex->id ?>" class="btn btn-primary btn-xs delete">Annuler</a>
+                                    <a href="imagerie?gestion&encour&an=<?= $ex->id ?>"
+                                       class="btn btn-primary btn-xs delete">Annuler</a>
                                     <?php
                                 }
                                 ?>
                             </td>
                             <td>
-                                <a style="display: none" class="btn btn-warning btn-xs" href='<?= \app\DefaultApp\DefaultApp::genererUrl("ecrire_resultat_imagerie", ['id' => $ex->id]) ?>'>Resultat</a>
+                                <a class="dropdown-item delete"
+                                   href='imagerie?gestion&demmande&lyezon=<?= $ex->id ?>'>Ajouter médecin</a>
                                 <?php
-                                if(\systeme\Model\Utilisateur::role()=="médecin radiologue" || $role=="admin"){
+                                if (\systeme\Model\Utilisateur::role() == "médecin radiologue" || $role == "admin") {
                                     ?>
-                                    <a class="btn btn-warning btn-xs" href='<?= \app\DefaultApp\DefaultApp::genererUrl("ecrire_resultat_imagerie", ['id' => $ex->id]) ?>'>Resultat</a>
+                                    <a class="btn btn-warning btn-xs"
+                                       href='<?= \app\DefaultApp\DefaultApp::genererUrl("ecrire_resultat_imagerie", ['id' => $ex->id]) ?>'>Resultat</a>
                                     <?php
                                 }
                                 ?>
@@ -239,16 +313,16 @@ $listeMed = $med->findAll();
                     <th>Patient</th>
                     <th>Examens</th>
                     <th>Médecin</th>
-                    <th>Date Demmande</th>
+                    <th>Date Demande</th>
                     <th>Statut</th>
                     <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 <?php
-                if($role=="patient"){
+                if ($role == "patient") {
                     $liste = \app\DefaultApp\Models\DemmandeImagerie::listeNaPatient($idu);
-                }else{
+                } else {
                     $liste = \app\DefaultApp\Models\DemmandeImagerie::listeNa($id_user);
                 }
                 if (count($liste) > 0) {
@@ -257,26 +331,27 @@ $listeMed = $med->findAll();
                         $id_patient = $ex->getIdPatient();
                         if ($id_patient != "") {
                             $patient = $patient->findById($id_patient);
-                            if($patient!=null){
+                            if ($patient != null) {
                                 $nomPatient = $patient->getNom() . " " . $patient->getPrenom();
-                            }else{
-                                $nomPatient="";
+                            } else {
+                                $nomPatient = "";
                             }
                         } else {
                             $nomPatient = "";
                         }
 
-                        $idmedecin = $ex->id_medecin;
-                        if (intval($idmedecin) == 0) {
-                            $nomMedecin = $idmedecin;
-                        } else {
-                            $med = $medecin->findById($idmedecin);
-                            if($med!=null) {
-                                $nomMedecin = $med->getNom() . " " . $med->getPrenom();
-                            }else{
-                                $nomMedecin="";
+                        $nomMedecin="";
+                        $mta=explode(",",$ex->id_medecin);
+                        if(is_array($mta)){
+                            foreach ($mta as $mt){
+                                $p=new \app\DefaultApp\Models\PersonelMedical();
+                                $p=$p->findById($mt);
+                                if($p!=null){
+                                    $nomMedecin.=$p->nom." ".$p->prenom."<br>";
+                                }
                             }
                         }
+
                         ?>
 
                         <tr>
@@ -290,15 +365,24 @@ $listeMed = $med->findAll();
                             <td><?= $statut ?></td>
                             <td>
                                 <?php
-                                if($role!=="patient"){
+                                if ($role !== "patient") {
                                     ?>
                                     <div class="basic-dropdown">
                                         <div class="dropdown">
-                                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
                                                 ACTION
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href='<?= \app\DefaultApp\DefaultApp::genererUrl("prise_specimen_imagerie", ['id' => $ex->getId()]) ?>'>Technique</a>
+                                                <a class="dropdown-item"
+                                                   href='<?= \app\DefaultApp\DefaultApp::genererUrl("prise_specimen_imagerie", ['id' => $ex->getId()]) ?>'>Technique</a>
+
+                                                <a class="dropdown-item delete"
+                                                   href='imagerie?gestion&demmande&lyezon=<?= $ex->id ?>'>Ajouter
+                                                    médecin</a>
+
+                                                <a class="dropdown-item delete"
+                                                   href='imagerie?gestion&demmande&supprimer=<?= $ex->id ?>'>Supprimer</a>
                                             </div>
                                         </div>
                                     </div>
@@ -373,9 +457,9 @@ $listeMed = $med->findAll();
                 </thead>
                 <tbody>
                 <?php
-                if($role=="patient"){
+                if ($role == "patient") {
                     $liste = \app\DefaultApp\Models\DemmandeImagerie::listePretPatient($idu);
-                }else{
+                } else {
                     $liste = \app\DefaultApp\Models\DemmandeImagerie::listePret($id_user);
                 }
 
@@ -388,24 +472,24 @@ $listeMed = $med->findAll();
                         $id_patient = $ex->getIdPatient();
                         if ($id_patient != "") {
                             $patient = $patient->findById($id_patient);
-                            if($patient!=null){
+                            if ($patient != null) {
                                 $nomPatient = $patient->getNom() . " " . $patient->getPrenom();
-                            }else{
-                                $nomPatient="";
+                            } else {
+                                $nomPatient = "";
                             }
                         } else {
                             $nomPatient = "";
                         }
 
-                        $idmedecin = $ex->id_medecin;
-                        if (intval($idmedecin) == 0) {
-                            $nomMedecin = $idmedecin;
-                        } else {
-                            $med = $medecin->findById($idmedecin);
-                            if($med!=null) {
-                                $nomMedecin = $med->getNom() . " " . $med->getPrenom();
-                            }else{
-                                $nomMedecin="";
+                        $nomMedecin="";
+                        $mta=explode(",",$ex->id_medecin);
+                        if(is_array($mta)){
+                            foreach ($mta as $mt){
+                                $p=new \app\DefaultApp\Models\PersonelMedical();
+                                $p=$p->findById($mt);
+                                if($p!=null){
+                                    $nomMedecin.=$p->nom." ".$p->prenom."<br>";
+                                }
                             }
                         }
                         ?>
@@ -419,22 +503,33 @@ $listeMed = $med->findAll();
                             <td><?= $statut ?></td>
                             <td>
                                 <?php
-                                if($role=="patient"){
+                                if ($role == "patient") {
                                     ?>
-                                    <a class="btn btn-success" href='<?= \app\DefaultApp\DefaultApp::genererUrl("afficher_resultat_imagerie", ['id' => $ex->id]) ?>'>Voire</a>
+                                    <a class="btn btn-success"
+                                       href='<?= \app\DefaultApp\DefaultApp::genererUrl("afficher_resultat_imagerie", ['id' => $ex->id]) ?>'>Voire</a>
                                     <?php
-                                }else{
+                                } else {
                                     ?>
                                     <div class="basic-dropdown">
                                         <div class="dropdown">
-                                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
                                                 ACTION
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href='<?= \app\DefaultApp\DefaultApp::genererUrl("prise_specimen_imagerie", ['id' => $ex->id]) ?>?nf'>Technique</a>
-                                                <button type="button" class="btn btn-primary dropdown-item" data-toggle="modal" data-target="#ass<?= $ex->id ?>">Médecin</button>
-                                                <a class="dropdown-item" href='<?= \app\DefaultApp\DefaultApp::genererUrl("ecrire_resultat_imagerie", ['id' => $ex->id]) ?>'>Modifier</a>
-                                                <a class="dropdown-item" href='<?= \app\DefaultApp\DefaultApp::genererUrl("afficher_resultat_imagerie", ['id' => $ex->id]) ?>'>Voire</a>
+                                                <a class="dropdown-item delete"
+                                                   href='imagerie?gestion&demmande&lyezon=<?= $ex->id ?>'>Ajouter
+                                                    médecin</a>
+
+                                                <a class="dropdown-item"
+                                                   href='<?= \app\DefaultApp\DefaultApp::genererUrl("prise_specimen_imagerie", ['id' => $ex->id]) ?>?nf'>Technique</a>
+                                                <button type="button" class="btn btn-primary dropdown-item"
+                                                        data-toggle="modal" data-target="#ass<?= $ex->id ?>">Médecin
+                                                </button>
+                                                <a class="dropdown-item"
+                                                   href='<?= \app\DefaultApp\DefaultApp::genererUrl("ecrire_resultat_imagerie", ['id' => $ex->id]) ?>'>Modifier</a>
+                                                <a class="dropdown-item"
+                                                   href='<?= \app\DefaultApp\DefaultApp::genererUrl("afficher_resultat_imagerie", ['id' => $ex->id]) ?>'>Voire</a>
                                             </div>
                                         </div>
                                     </div>
@@ -494,7 +589,7 @@ $listeMed = $med->findAll();
             <?php
         } else if (isset($_GET['tous'])) {
             ?>
-            <h4>Tout les demmandes</h4>
+            <h4>Tout les demandes</h4>
             <table id='' class='table table-bordered datatable'
                    style='font-size:13px'>
                 <thead>
@@ -510,9 +605,9 @@ $listeMed = $med->findAll();
                 </thead>
                 <tbody>
                 <?php
-                if($role=="patient"){
+                if ($role == "patient") {
                     $liste = \app\DefaultApp\Models\DemmandeImagerie::allPatient($idu);
-                }else{
+                } else {
                     $liste = \app\DefaultApp\Models\DemmandeImagerie::all($id_user);
                 }
                 if (count($liste) > 0) {
@@ -525,24 +620,24 @@ $listeMed = $med->findAll();
                         $id_patient = $ex->getIdPatient();
                         if ($id_patient != "") {
                             $patient = $patient->findById($id_patient);
-                            if($patient!=null){
+                            if ($patient != null) {
                                 $nomPatient = $patient->getNom() . " " . $patient->getPrenom();
-                            }else{
-                                $nomPatient="";
+                            } else {
+                                $nomPatient = "";
                             }
                         } else {
                             $nomPatient = "";
                         }
 
-                        $idmedecin = $ex->id_medecin;
-                        if (intval($idmedecin) == 0) {
-                            $nomMedecin = $idmedecin;
-                        } else {
-                            $med = $medecin->findById($idmedecin);
-                            if($med!=null) {
-                                $nomMedecin = $med->getNom() . " " . $med->getPrenom();
-                            }else{
-                                $nomMedecin="";
+                        $nomMedecin="";
+                        $mta=explode(",",$ex->id_medecin);
+                        if(is_array($mta)){
+                            foreach ($mta as $mt){
+                                $p=new \app\DefaultApp\Models\PersonelMedical();
+                                $p=$p->findById($mt);
+                                if($p!=null){
+                                    $nomMedecin.=$p->nom." ".$p->prenom."<br>";
+                                }
                             }
                         }
                         ?>
@@ -556,19 +651,22 @@ $listeMed = $med->findAll();
                             <td><?= $statut ?></td>
                             <td>
                                 <?php
-                                if($role=="patient"){
+                                if ($role == "patient") {
                                     ?>
-                                    <a class="btn btn-success" href='<?= \app\DefaultApp\DefaultApp::genererUrl("afficher_resultat_imagerie", ['id' => $ex->id]) ?>'>Voire</a>
+                                    <a class="btn btn-success"
+                                       href='<?= \app\DefaultApp\DefaultApp::genererUrl("afficher_resultat_imagerie", ['id' => $ex->id]) ?>'>Voire</a>
                                     <?php
-                                }else{
+                                } else {
                                     ?>
                                     <div class="basic-dropdown">
                                         <div class="dropdown">
-                                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                            <button type="button" class="btn btn-primary dropdown-toggle"
+                                                    data-bs-toggle="dropdown">
                                                 ACTION
                                             </button>
                                             <div class="dropdown-menu">
-                                                <a class="dropdown-item" href='<?= \app\DefaultApp\DefaultApp::genererUrl("afficher_resultat_imagerie", ['id' => $ex->id]) ?>'>Voire</a>
+                                                <a class="dropdown-item"
+                                                   href='<?= \app\DefaultApp\DefaultApp::genererUrl("afficher_resultat_imagerie", ['id' => $ex->id]) ?>'>Voire</a>
                                             </div>
                                         </div>
                                     </div>
@@ -612,24 +710,24 @@ $listeMed = $med->findAll();
                         $id_patient = $ex->getIdPatient();
                         if ($id_patient != "") {
                             $patient = $patient->findById($id_patient);
-                            if($patient!=null){
+                            if ($patient != null) {
                                 $nomPatient = $patient->getNom() . " " . $patient->getPrenom();
-                            }else{
-                                $nomPatient="";
+                            } else {
+                                $nomPatient = "";
                             }
                         } else {
                             $nomPatient = "";
                         }
 
-                        $idmedecin = $ex->id_medecin;
-                        if (intval($idmedecin) == 0) {
-                            $nomMedecin = $idmedecin;
-                        } else {
-                            $med = $medecin->findById($idmedecin);
-                            if($med!=null) {
-                                $nomMedecin = $med->getNom() . " " . $med->getPrenom();
-                            }else{
-                                $nomMedecin="";
+                        $nomMedecin="";
+                        $mta=explode(",",$ex->id_medecin);
+                        if(is_array($mta)){
+                            foreach ($mta as $mt){
+                                $p=new \app\DefaultApp\Models\PersonelMedical();
+                                $p=$p->findById($mt);
+                                if($p!=null){
+                                    $nomMedecin.=$p->nom." ".$p->prenom."<br>";
+                                }
                             }
                         }
                         ?>
@@ -724,6 +822,71 @@ $listeMed = $med->findAll();
                             </div>
                         </div>
 
+                        <?php
+                    }
+                }
+                ?>
+                </tbody>
+            </table>
+            <?php
+        } else if (isset($_GET['supprimer_x'])) {
+            ?>
+            <h4>Supprimer</h4>
+            <table id='' class='table table-bordered datatable'
+                   style='font-size:13px'>
+                <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Examens</th>
+                    <th>Patient</th>
+                    <th>Médecin</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <?php
+                $liste = \app\DefaultApp\Models\DemmandeImagerie::listeSupprimer($id_user);
+                if (count($liste) > 0) {
+                    foreach ($liste as $ex) {
+                        $statut = $ex->getStatut();
+                        if ($statut === "n/a") {
+                            $statut = "encour";
+                        }
+                        $id_patient = $ex->getIdPatient();
+                        if ($id_patient != "") {
+                            $patient = $patient->findById($id_patient);
+                            if ($patient != null) {
+                                $nomPatient = $patient->getNom() . " " . $patient->getPrenom();
+                            } else {
+                                $nomPatient = "";
+                            }
+                        } else {
+                            $nomPatient = "";
+                        }
+
+                        $nomMedecin="";
+                        $mta=explode(",",$ex->id_medecin);
+                        if(is_array($mta)){
+                            foreach ($mta as $mt){
+                                $p=new \app\DefaultApp\Models\PersonelMedical();
+                                $p=$p->findById($mt);
+                                if($p!=null){
+                                    $nomMedecin.=$p->nom." ".$p->prenom."<br>";
+                                }
+                            }
+                        }
+                        ?>
+
+                        <tr>
+                            <td><?= $ex->id ?></td>
+                            <td><?= getListeExamens($ex->id) ?></td>
+                            <td><?= ucfirst($nomPatient) ?></td>
+                            <td><?= $nomMedecin ?></td>
+                            <td><?= $ex->getDate(); ?></td>
+                            <td><?= $statut ?></td>
+                        </tr>
                         <?php
                     }
                 }

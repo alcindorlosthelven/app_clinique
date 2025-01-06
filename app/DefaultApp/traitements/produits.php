@@ -355,6 +355,7 @@ if (isset($_GET['modal'])) {
                                                 <option value="cash" aria-selected="true" aria-hidden="true">Cash</option>
                                                 <option value="cash">Cash</option>
                                                 <option value="cheque">Cheque</option>
+                                                <option value="carte credit">Carte credit</option>
                                                 <option value="credit">Credit</option>
                                             </select>
                                         </div>
@@ -362,7 +363,7 @@ if (isset($_GET['modal'])) {
                                     <div class="mb-3 col-12">
                                         <label class="form-label" for="formBasicNotes">Note: </label>
                                         <textarea name="notes" rows="2" placeholder="Enter Note" id="basic_notes"
-                                                  class="form-control-solid form-control"></textarea>
+                                                  class="form-control-solid form-control">n/a</textarea>
                                     </div>
                                     <div class="mb-3 col-12 modal-footer">
                                         <input type="hidden" id="rabais_v" value="<?= $valRabais ?>">

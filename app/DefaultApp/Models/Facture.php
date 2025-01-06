@@ -8,7 +8,7 @@ class Facture extends Model
 {
     protected $table="facture";
     public $id,$date,$heure,$type,$montant,$rabais,$montant_apres_rabais,$contenue,$user;
-    public $methode_paiement,$note,$id_patient,$monnaie;
+    public $methode_paiement,$note,$id_patient,$monnaie,$versement,$balance;
 
     public function listeParDate($date1,$date2)
     {

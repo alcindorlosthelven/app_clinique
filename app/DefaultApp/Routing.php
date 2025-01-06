@@ -21,13 +21,15 @@ App::get("/patient", "default.patient","patient");
 App::get("/prise-specimen-imagerie-:id", "default.priseSpecimen", "prise_specimen_imagerie")->avec("id", "[0-9]+");
 App::get("/ecrire-resultat-imagerie-:id", "default.ecrireResultat", "ecrire_resultat_imagerie")->avec("id", "[0-9]+");
 App::get("/afficher-resultat-imagerie-:id", "default.afficherResultat", "afficher_resultat_imagerie")->avec("id", "[0-9]+");
+App::post("/afficher-resultat-imagerie-:id", "default.afficherResultat", "afficher_resultat_imagerie")->avec("id", "[0-9]+");
 App::get("/print-imagerie", "print.imagerie", "print_imagerie");
 App::get("/image-imagerie", "print.imagesImagerie", "image_imagerie");
+App::get("/consulter-resultat", "print.consulterResultat", "consulter_resulter");
+App::post("/consulter-resultat", "print.consulterResultat", "consulter_resulter");
+
 
 App::get("/inbox", "default.inbox","inbox");
 App::get("/profil", "default.profil","profi");
-
-
 App::get("/acces-utilisateur-:id", "utilisateur.acces", "acces_utilisateur")->avec("id",'[0-9]+');
 App::get("/utilisateur", "utilisateur.lister","utilisateur");
 App::get("/ajouter-utilisateur", "utilisateur.ajouter", "ajouter_utilisateur");

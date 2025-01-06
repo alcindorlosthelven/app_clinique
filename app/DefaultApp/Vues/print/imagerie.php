@@ -92,10 +92,9 @@ $age=date("Y")-$anne_naisance;
 
                 <p style="font-weight: bold">Trouvailles : </p>
                 <p><?= stripslashes($datax->remarque) ?></p>
-                <br>
-
+                <!--<br>
                 <p style="font-weight: bold">Impression : </p>
-                <p><?= stripslashes($datax->conclusion) ?></p>
+                <p><?php /*= stripslashes($datax->conclusion) */?></p>-->
                 <?php
             }
             ?>
@@ -103,16 +102,24 @@ $age=date("Y")-$anne_naisance;
         </div>
     </div>
 
-
     <br>
     <div class="col-12" style="display: block;">
-        <div class="entete" style="padding-right:100px;padding-left: 100px;font-weight: bold">
-            <p style="float: right">Dr. Lerby Exantus<br>Radiologue</p>
-            <p>Dr. Valerie Deverson<br>Radiologue</p>
+        <div class="entete" style="font-weight: bold">
+            <?php
+            if ($demande->deverson == "oui") {
+                ?>
+                <p>Signé électroniquement par : Dr. Valerie Deverson</p>
+                <?php
+            }
+
+            if ($demande->exantus == "oui") {
+                ?>
+                <p>Signé électroniquement par : Dr. Lerby Exantus</p>
+                <?php
+            }
+            ?>
         </div>
-
         <br>
-
     </div>
 
 </div>

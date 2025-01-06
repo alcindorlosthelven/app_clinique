@@ -250,9 +250,15 @@ if (isset($_POST['btnfait'])) {
         return;
     }
 
+
+
+
     $examensDemandeImagerie=\app\DefaultApp\Models\ExamensDemandeImagerie::rechercher($id_demande,$id_examens);
+
     $examensDemandeImagerie->setRemarque($description);
     $examensDemandeImagerie->conclusion=$conclusion;
+
+
 
     $images=array();
 
@@ -266,8 +272,14 @@ if (isset($_POST['btnfait'])) {
                 }
             }
         }
+        if(strlen(json_encode($images))>10){
+            $examensDemandeImagerie->setResultat(json_encode($images));
+        }
+
     }
-    $examensDemandeImagerie->setResultat(json_encode($images));
+
+
+
     $m=$examensDemandeImagerie->update();
     echo $m;
 }

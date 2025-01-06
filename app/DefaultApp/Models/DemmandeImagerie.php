@@ -14,6 +14,7 @@ class DemmandeImagerie extends Model
 {
     protected $table = "demmande_imagerie";
     public $id, $id_patient, $date, $date_prelevement,$id_medecin,$statut,$payer,$indication,$remarque,$technicien;
+    public $deverson,$exantus,$raison_suppression;
 
     /**
      * @return mixed
@@ -252,6 +253,27 @@ class DemmandeImagerie extends Model
                 $req = "select *from demmande_imagerie WHERE statut='archive' and institution = '{$institution}'";
             } else {
                 $req = "select *from demmande_imagerie WHERE statut='archive' and institution = '{$institution}' and id_medecin2='{$id_user}'";
+            }
+        }
+        $stmt = $con->prepare($req);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    }
+
+    public static function listeSupprimer($id_user = "", $institution = "")
+    {
+        $con = self::connection();
+        if ($institution == "") {
+            if ($id_user == "") {
+                $req = "select *from demmande_imagerie WHERE statut='supprimer'";
+            } else {
+                $req = "select *from demmande_imagerie WHERE statut='supprimer' and id_medecin2='{$id_user}'";
+            }
+        } else {
+            if ($id_user == "") {
+                $req = "select *from demmande_imagerie WHERE statut='supprimer' and institution = '{$institution}'";
+            } else {
+                $req = "select *from demmande_imagerie WHERE statut='supprimer' and institution = '{$institution}' and id_medecin2='{$id_user}'";
             }
         }
         $stmt = $con->prepare($req);

@@ -1,6 +1,6 @@
 <div class="card">
     <div class="card-header">
-        Demmande Imagerie
+        Demande Imagerie
     </div>
 
     <div class="card-body">
@@ -109,8 +109,8 @@
                         <strong>Agent : <?= \app\DefaultApp\Models\Utilisateur::pseudo() ?></strong>
                         <br>
                         <br>
-                        <strong>Demmande Imagerie</strong><br>
-                        <strong>No Demmande : <?= $gdimagerie->id ?></strong><br>
+                        <strong>Demande Imagerie</strong><br>
+                        <strong>No Demande : <?= $gdimagerie->id ?></strong><br>
                         <strong>Payer : OUI </strong>
                     </div>
                     <br>

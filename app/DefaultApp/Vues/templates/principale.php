@@ -46,6 +46,7 @@ if (!\systeme\Model\Utilisateur::session()) {
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/44.0.0/ckeditor5.css" />
 </head>
 <body>
 
@@ -693,6 +694,43 @@ if (!\systeme\Model\Utilisateur::session()) {
 <script src="assets/js/styleSwitcher.js" type="text/javascript"></script>
 <script src="<?= App::autre("assets/tinymce/tinymce.min.js") ?>"></script>
 <script src="<?=App::autre("assets/jquery-ui/jquery-ui.min.js")?>"></script>
+<!--<script src="https://cdn.ckeditor.com/ckeditor5/44.0.0/ckeditor5.umd.js"></script>-->
+<!--<script>
+    const {
+        ClassicEditor,
+        Essentials,
+        Bold,
+        Italic,
+        Font,
+        Paragraph
+    } = CKEDITOR;
+
+    ClassicEditor
+        .create( document.querySelector( '.editeur' ), {
+            licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NjQ4MDYzOTksImp0aSI6ImJkYjNhYTdlLTA2ODgtNDdlMS1hNmIwLWYxNGVmOWE0ZjZmZiIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiXSwiZmVhdHVyZXMiOlsiRFJVUCJdLCJ2YyI6IjE4ODk4NTM3In0.3ESn_aqO2RUdIm1zhllqEg4SQstC62u9w2XDEEnuSiudpVgstVgtVM8BGSVSG4iI_nJjfWlAcsP16MBb3if1dw',
+            plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+            ]
+        } )
+        .then( /* ... */ )
+        .catch( /* ... */ );
+
+
+    ClassicEditor
+        .create( document.querySelector( '.editeur2' ), {
+            licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NjQ4MDYzOTksImp0aSI6ImJkYjNhYTdlLTA2ODgtNDdlMS1hNmIwLWYxNGVmOWE0ZjZmZiIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiXSwiZmVhdHVyZXMiOlsiRFJVUCJdLCJ2YyI6IjE4ODk4NTM3In0.3ESn_aqO2RUdIm1zhllqEg4SQstC62u9w2XDEEnuSiudpVgstVgtVM8BGSVSG4iI_nJjfWlAcsP16MBb3if1dw',
+            plugins: [ Essentials, Bold, Italic, Font, Paragraph ],
+            toolbar: [
+                'undo', 'redo', '|', 'bold', 'italic', '|',
+                'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor'
+            ]
+        } )
+        .then( /* ... */ )
+        .catch( /* ... */ );
+
+</script>-->
 <script>
     tinymce.init(
         {
@@ -703,9 +741,17 @@ if (!\systeme\Model\Utilisateur::session()) {
             custom_colors: false
         }
     );
+
+    tinymce.init(
+        {
+            selector: '.editeur1',
+            plugins: 'code print preview autosave directionality fullscreen image link media template table hr anchor lists  wordcount imagetools textpattern noneditable emoticons',
+            menubar: 'code file edit view insert format tools table tc help',
+            toolbar: 'textcolor backgroundcolor | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist checklist | forecolor backcolor casechange permanentpen formatpainter removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media pageembed template link anchor codesample | a11ycheck ltr rtl | showcomments addcomment forecolor backcolor',
+            custom_colors: false
+        }
+    );
 </script>
-
-
 
 <script>
 
@@ -782,6 +828,12 @@ if (!\systeme\Model\Utilisateur::session()) {
             });
 
         }));
+
+        function removeHtmlTags(input) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = input;
+            return tempDiv.textContent || tempDiv.innerText || '';
+        }
 
         $(".fait_imagerie").on('submit', (function (e) {
             e.preventDefault();
