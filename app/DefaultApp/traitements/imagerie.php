@@ -236,51 +236,73 @@ if (isset($_GET['voire_demande'])) {
 }
 
 if (isset($_POST['btnfait'])) {
-    $imagerie= new \app\DefaultApp\Models\Imagerie();
+    $imagerie = new \app\DefaultApp\Models\Imagerie();
     $id_demande = $_POST['id_demande'];
-    $id_examens=$_POST['id_examens'];
-    $description=trim(addslashes($_POST['description']));
-    if($description==""){
+    $id_examens = $_POST['id_examens'];
+    $description = trim(addslashes($_POST['description']));
+    
+    if ($description == "") {
         echo "Entrer une description";
         return;
     }
-    $conclusion=trim(addslashes($_POST['conclusion']));
-    if($conclusion==""){
+    
+    $conclusion = trim(addslashes($_POST['conclusion']));
+    if ($conclusion == "") {
         echo "Entrer une impression";
         return;
     }
 
-
-
-
-    $examensDemandeImagerie=\app\DefaultApp\Models\ExamensDemandeImagerie::rechercher($id_demande,$id_examens);
-
+    $examensDemandeImagerie = \app\DefaultApp\Models\ExamensDemandeImagerie::rechercher($id_demande, $id_examens);
     $examensDemandeImagerie->setRemarque($description);
-    $examensDemandeImagerie->conclusion=$conclusion;
+    $examensDemandeImagerie->conclusion = $conclusion;
 
-
-
-    $images=array();
-
+    $images = array();
     $total = count($_FILES['fichier']['name']);
-    if($total>0) {
+
+    if ($total > 0 && $_FILES['fichier']['name'][0] != '') {
         for ($i = 0; $i < $total; $i++) {
-            if (isset($_FILES['fichier']['name'][$i])) {
-                $fichier=new \app\DefaultApp\Models\Fichier($_FILES['fichier']['name'][$i],"img_$id_demande$i");
-                if($fichier->Upload($i)){
-                    $images[]=$fichier->getSrc();
+            if (isset($_FILES['fichier']['name'][$i]) && $_FILES['fichier']['name'][$i] != '') {
+                $fichier = new \app\DefaultApp\Models\Fichier($_FILES['fichier']['name'][$i], "img_$id_demande$i");
+                if ($fichier->Upload($i)) {
+                    $images[] = $fichier->getSrc();
                 }
             }
         }
-        if(strlen(json_encode($images))>10){
-            $examensDemandeImagerie->setResultat(json_encode($images));
+
+        // Handle existing images
+        $existingImages = [];
+        if (isset($examensDemandeImagerie->resultat) && $examensDemandeImagerie->resultat != 'n/a') {
+            // Decode existing images if they exist
+            $existingImages = json_decode($examensDemandeImagerie->resultat, true);
+            if (!is_array($existingImages)) {
+                $existingImages = [];
+            }
         }
 
+        // Merge existing and new images
+        $updatedImages = array_merge($existingImages, $images);
+        $examensDemandeImagerie->setResultat(json_encode($updatedImages));
     }
 
+    if (isset($_POST['save_and_sign'])) {
+        $dema = new \app\DefaultApp\Models\DemmandeImagerie();
+        $dema = $dema->findById($id_demande);
+        $id_u = \systeme\Model\Utilisateur::session_valeur();
+        
+        if ($id_u == '1') {
+            $dema->deverson = 'oui';
+            $dema->deverson_date = date('Y-m-d');
+            $dema->update();
+        }
+        
+        if ($id_u != '1') {
+            $dema->exantus = 'oui';
+            $dema->exantus_date = date('Y-m-d');
+            $dema->update();
+        }
+    }
 
-
-    $m=$examensDemandeImagerie->update();
+    $m = $examensDemandeImagerie->update();
     echo $m;
 }
 
@@ -317,11 +339,30 @@ if(isset($_POST['specimen'])){
 
     foreach ($lep as $l){
         if(isset($_POST['ex-'.$l->getIdImagerie()])){
+
             $av++;
             $id_examen=$l->getIdImagerie();
             $exdl=\app\DefaultApp\Models\ExamensDemandeImagerie::rechercher($id_demande,$id_examen);
+            // if(isset($exdl->resultat)=='n/a'){
+            //     $updatedImages =  $images;
+
+            // }else{
+            //     $updatedImages = array_merge($exdl->resultat, $images);
+
+            // }
+            $existingImages = [];
+            if (isset($exdl->resultat) && $exdl->resultat != 'n/a') {
+                // Decode existing images if they exist
+                $existingImages = json_decode($exdl->resultat, true);
+                if (!is_array($existingImages)) {
+                    $existingImages = [];
+                }
+            }
+    
+            // Merge existing and new images
+            $updatedImages = array_merge($existingImages, $images);
             $exdl->setStatut(1);
-            $exdl->resultat=json_encode($images);
+            $exdl->resultat=json_encode($updatedImages);
             $m=$exdl->update();
         }
     }

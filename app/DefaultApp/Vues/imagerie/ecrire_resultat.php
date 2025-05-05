@@ -155,7 +155,10 @@ $age = date("Y") - $anne_naisance;
                                                 $result = \app\DefaultApp\Models\DemmandeImagerie::resultatExamenImagerie($id_demande, $id_examen);
                                                 ?>
                                                 <div style="text-align: center">
-                                                    <input type="submit" value="Modifier" class="btn btn-primary">
+                                                    <input type="submit" name="save" value="Sauvegarder" class="btn btn-primary">
+                                                    <input type="submit" class="btn btn-primary" name="save_and_sign" value="Sauvegarder et Signé">
+
+                                                    
                                                 </div>
                                                 <?php
                                             } else {

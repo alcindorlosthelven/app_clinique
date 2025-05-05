@@ -42,7 +42,7 @@ if (isset($_GET['ajouter_produit'])) {
     $option = '';
     $footer = '';
     $data = '';
-    if (count(Panier::lister($userId)) == 0) {
+    if (count(Panier::lister($userId)) >= 0) {
         $r = \app\DefaultApp\Models\Panier::updatePanier($produit, $prix, $userId, $nom, $description, $option);
         $taxe = 0;
         $stotal = 0.00;
@@ -492,7 +492,7 @@ if (isset($_GET['commande'])) {
     $total = 0;
     $produit = "0";
     $qt = 0;
-
+    $fac=$id_patient."-".$ran;
     $listeExames = array();
 
     $type_facture = "";
@@ -520,22 +520,25 @@ if (isset($_GET['commande'])) {
     }
 
     $totalApresRabis = $total - $rabais;
-
-    $order = new \app\DefaultApp\Models\DemmandeImagerie();
-    $order->date = date("Y-m-d H:i:s");
-    $order->date_prelevement = "n/a";
-    $order->id_medecin = $id_medecin;
-    $order->id_patient = $id_patient;
-    $order->payer = "oui";
-    $order->statut = "n/a";
-    $r = $order->add();
-    if ($r === 'ok') {
-        $mxa = "ok";
-        $id_demmande = $order->lastId();
-        foreach ($listeExames as $index => $x) {
+    foreach($listeExames as $index => $x){
+        $order = new \app\DefaultApp\Models\DemmandeImagerie();
+        $order->date = date("Y-m-d H:i:s");
+        $order->date_prelevement = "n/a";
+        $order->id_medecin = $id_medecin;
+        $order->id_patient = $id_patient;
+        $order->facture = $fac;
+        $order->payer = "oui";
+        $order->statut = "n/a";
+        $r = $order->add();
+        if ($r === 'ok') {
+            $id_demmande = $order->lastId();
+            $demande = $id_demmande;
             $listeExames[$index]->id_demande = $id_demmande;
             $mxa = $listeExames[$index]->add();
         }
+    }
+    if ($r === 'ok') {
+        $mxa = "ok";
         if ($mxa == "ok") {
             $f = new \app\DefaultApp\Models\Facture();
             $f->date = date("Y-m-d");
@@ -549,6 +552,7 @@ if (isset($_GET['commande'])) {
             $f->methode_paiement = $paiment;
             $f->note = $note;
             $f->id_patient = $id_patient;
+            $f->id_demande = $fac;
             $f->monnaie=$change;
             $mx = $f->add();
             if ($mx == "ok") {
@@ -557,7 +561,7 @@ if (isset($_GET['commande'])) {
                     $pat = $pat->findById($id_patient);
                     if ($pat != null) {
                         $balAvant = floatval($pat->balance);
-                        $balApres = $balAvant + floatval($totalApresRabis);
+                        $balApres = $balAvant - floatval($totalApresRabis);
                         $pat->balance=$balApres;
                         $m=$pat->update();
                         if($m=="ok"){

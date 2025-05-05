@@ -51,7 +51,7 @@
 
                     <div class="form-group">
                         <label>Fichier</label>
-                        <input accept="image/*" multiple type="file" name="fichier[]" class="form-control" required>
+                        <input accept="image/*" multiple type="file" name="fichier[]" class="form-control">
                     </div>
 
                     <table class="table table-bordered" style="">

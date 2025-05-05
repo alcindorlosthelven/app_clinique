@@ -45,9 +45,9 @@ if (defined('ENVIRONMENT'))
 //configuration base de donnee
 $database = array(
     "serveur"=>"localhost",
-    "nom_base"=>"clinique",
+    "nom_base"=>"clinic",
     "utilisateur"=>"root",
-    "motdepasse"=>"root"
+    "motdepasse"=>"A123ricardo#m"
 );
 
 //configuration email
@@ -70,7 +70,7 @@ $configuration = array(
     "url" => $_GET['url'],
     "database" => $database,
     "configurationEmail"=>$configurationEmail,
-    "dossierProjet" => "clinique",
+    "dossierProjet" => "appClinic/app_clinique",
     "nomApp" => "DefaultApp"
 );
 \systeme\Application\Configuration::addConfiguration($configuration,"DefaultApp");

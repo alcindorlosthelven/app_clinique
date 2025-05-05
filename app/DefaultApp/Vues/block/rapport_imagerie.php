@@ -55,7 +55,7 @@ if (isset($_POST['de'])) {
         $medecin = new \app\DefaultApp\Models\PersonelMedical();
         if (count($liste) > 0) {
             foreach ($liste as $ex) {
-                $gimg = new \app\DefaultApp\Models\GdemmandeImagerie();
+                $gimg = new \app\DefaultApp\Models\demmandeImagerie();
                 $gimg = $gimg->findByIdDemmande($ex->id);
                 if ($gimg != null) {
                     $transaction = new \app\DefaultApp\Models\Transaction();

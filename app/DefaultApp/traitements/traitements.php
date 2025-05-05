@@ -31,8 +31,16 @@ if(isset($_POST['update_docteur'])){
 }
 
 if(isset($_POST['ajouter_patient'])){
+    function generateRandomCode($length = 6) {
+        $code = '';
+        for ($i = 0; $i <= $length; $i++) {
+            $code .= rand(0, 9);
+        }
+        return $code;
+    }
+    $code=generateRandomCode(5);
     $p=new \app\DefaultApp\Models\Patient();
-    $p->code=$_POST['code'];
+    $p->code=$code;
     $p->no_identite=$_POST['no_identite'];
     $p->nom=trim(addslashes($_POST['nom']));
     $p->prenom=trim(addslashes($_POST['prenom']));
@@ -59,4 +67,19 @@ if(isset($_POST['update_patient'])){
     $p->sexe=$_POST['sexe'];
     $m=$p->update();
     echo $m;
+}
+
+if(isset($_POST['update_balance_patient'])){
+    $id=$_POST['id'];
+    $p=new \app\DefaultApp\Models\Patient();
+    $p=$p->findById($id);
+   
+    $balance =  $p->balance;
+    $balance-=$_POST['balance'];
+    $p->balance=$balance;
+    $m=$p->update();
+    if($m =='ok'){
+        echo '<div class="alert alert-success">Balance mise à jour</div>';
+    }
+
 }

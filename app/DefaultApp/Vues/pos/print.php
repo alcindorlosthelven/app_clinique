@@ -23,7 +23,7 @@ if ($fiche1 !== null) {
                     <br><br>
                 </div>
                 <span style="font-weight: bold">
-                    #Facture : <?= $fiche1->id ?><br>
+                    #Facture : <?= $fiche1->id_demande?><br>
                     Vendeur : <?= ucfirst($vendeur->nom) . " " . ucfirst($vendeur->prenom) ?><br>
                     Patient : <?= ucfirst($patient->nom) . " " . ucfirst($patient->prenom) ?><br>
                     Date : <?= $fiche1->date . " a " . $fiche1->heure ?><br>

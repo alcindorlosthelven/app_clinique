@@ -13,10 +13,10 @@ $role=$_SESSION['role'];
             require_once "menu_kontab.php";
         }elseif($role=="réceptionniste"){
             require_once "menu_receptionis.php";
-        }elseif($role=="médecin radiologue"){
-            require_once "menu_mr.php";
-        }elseif($role=="médecin"){
+        }elseif($role=="medecin radiologue"){
             require_once "menu_m.php";
+        }elseif($role=="médecin"){
+            require_once "menu_mr.php";
         }elseif($role=="patient"){
             require_once "menu_pt.php";
         }

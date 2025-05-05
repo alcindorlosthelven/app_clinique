@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: alcin
@@ -13,8 +14,8 @@ use systeme\Model\Model;
 class DemmandeImagerie extends Model
 {
     protected $table = "demmande_imagerie";
-    public $id, $id_patient, $date, $date_prelevement,$id_medecin,$statut,$payer,$indication,$remarque,$technicien;
-    public $deverson,$exantus,$raison_suppression;
+    public $id, $id_patient, $date, $date_prelevement, $id_medecin, $statut, $payer, $indication, $remarque, $technicien, $facture, $exantus_date, $deverson_date;
+    public $deverson, $exantus, $raison_suppression;
 
     /**
      * @return mixed
@@ -143,21 +144,31 @@ class DemmandeImagerie extends Model
     public static function listeNa($id_user = "", $institution = "")
     {
         $con = self::connection();
-        if ($institution == "") {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='n/a' and payer='oui'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='n/a' and payer='oui'  and id_medecin2='{$id_user}'";
-            }
-        } else {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='n/a' and institution='{$institution}' and payer='oui' ";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='n/a' and institution='{$institution}' and payer='oui'  and id_medecin2='{$id_user}'";
+        $where = ["statut='n/a'", "payer='oui'"];
+        $params = [];
+    
+        if (!empty($institution)) {
+            $where[] = "institution = ?";
+            $params[] = $institution;
+        }
+    
+        if (!empty(trim($id_user))) {
+            $ids = array_filter(array_map('trim', explode(",", $id_user)), fn($id) => $id !== '');
+            if (!empty($ids)) {
+                $regexParts = [];
+                foreach ($ids as $id) {
+                    $regexParts[] = "(^|,)$id($|,)";
+                }
+                $regexPattern = implode("|", $regexParts);
+                $where[] = "id_medecin REGEXP ?";
+                $params[] = $regexPattern;
             }
         }
-        $stmt = $con->prepare($req);
-        $stmt->execute();
+    
+        $sql = "SELECT * FROM demmande_imagerie WHERE " . implode(" AND ", $where);
+        $stmt = $con->prepare($sql);
+        $stmt->execute($params);
+        
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
@@ -179,31 +190,69 @@ class DemmandeImagerie extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
+
     public static function listeEncour($id_user = "", $institution = "")
     {
         $con = self::connection();
-        if ($institution == "") {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='encour'  and payer='oui'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='encour' and payer='oui' and id_medecin2='{$id_user}'";
+        $where = [];
+        $params = [];
+
+        if (empty($institution)) {
+            // Always apply this condition
+            $where[] = "(deverson = '0' OR exantus = '0')";
+
+            if (!empty(trim($id_user))) {
+                $ids = array_filter(array_map('trim', explode(",", $id_user)), fn($id) => $id !== '');
+                if (!empty($ids)) {
+                    // Create a regex pattern to match any of the IDs in the comma-separated list
+                    $regexParts = [];
+                    foreach ($ids as $id) {
+                        $regexParts[] = "(^|,)$id($|,)";
+                    }
+                    $regexPattern = implode("|", $regexParts);
+                    $where[] = "id_medecin REGEXP ?";
+                    $params[] = $regexPattern;
+                }
             }
         } else {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='encour' and institution = '{$institution}' and payer='oui'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='encour' and institution = '{$institution}' and payer='oui' and id_medecin2='{$id_user}'";
+            $where[] = "statut = 'encour'";
+            $where[] = "institution = ?";
+            $params[] = $institution;
+            $where[] = "payer = 'oui'";
+
+            if (!empty(trim($id_user))) {
+                $ids = array_filter(array_map('trim', explode(",", $id_user)), fn($id) => $id !== '');
+                if (!empty($ids)) {
+                    // Create a regex pattern to match any of the IDs in the comma-separated list
+                    $regexParts = [];
+                    foreach ($ids as $id) {
+                        $regexParts[] = "(^|,)$id($|,)";
+                    }
+                    $regexPattern = implode("|", $regexParts);
+                    $where[] = "id_medecin REGEXP ?";
+                    $params[] = $regexPattern;
+                }
             }
         }
-        $stmt = $con->prepare($req);
-        $stmt->execute();
+
+        $sql = "SELECT * FROM demmande_imagerie";
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+        $sql .= " ORDER BY id DESC";
+
+        $stmt = $con->prepare($sql);
+        $stmt->execute($params);
+
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
+
+
 
     public static function listeEncour2()
     {
         $con = self::connection();
-        $req = "select *from demmande_imagerie WHERE statut='encours'";
+        $req = "select *from demmande_imagerie WHERE statut='encours' ordr by -id";
         $stmt = $con->prepare($req);
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_OBJ);
@@ -212,21 +261,56 @@ class DemmandeImagerie extends Model
     public static function listePret($id_user = "", $institution = "")
     {
         $con = self::connection();
+        $where = [];
+        $params = [];
+
         if ($institution == "") {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='pret' and payer='oui'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='pret' and payer='oui'  and id_medecin2='{$id_user}'";
+            $where[] = "deverson = 'oui'";
+            $where[] = "exantus = 'oui'";
+
+            if (!empty(trim($id_user))) {
+                $ids = array_filter(array_map('trim', explode(",", $id_user)), fn($id) => $id !== '');
+                if (!empty($ids)) {
+                    // Create a regex pattern to match any of the IDs in the comma-separated list
+                    $regexParts = [];
+                    foreach ($ids as $id) {
+                        $regexParts[] = "(^|,)$id($|,)";
+                    }
+                    $regexPattern = implode("|", $regexParts);
+                    $where[] = "id_medecin REGEXP ?";
+                    $params[] = $regexPattern;
+                }
             }
         } else {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='pret' and institution = '{$institution}' and payer='oui'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='pret' and institution = '{$institution}' and payer='oui' and id_medecin2='{$id_user}'";
+            $where[] = "statut = 'pret'";
+            $where[] = "institution = ?";
+            $params[] = $institution;
+            $where[] = "payer = 'oui'";
+
+            if (!empty(trim($id_user))) {
+                $ids = array_filter(array_map('trim', explode(",", $id_user)), fn($id) => $id !== '');
+                if (!empty($ids)) {
+                    // Create a regex pattern to match any of the IDs in the comma-separated list
+                    $regexParts = [];
+                    foreach ($ids as $id) {
+                        $regexParts[] = "(^|,)$id($|,)";
+                    }
+                    $regexPattern = implode("|", $regexParts);
+                    $where[] = "id_medecin REGEXP ?";
+                    $params[] = $regexPattern;
+                }
             }
         }
-        $stmt = $con->prepare($req);
-        $stmt->execute();
+
+        $sql = "SELECT * FROM demmande_imagerie";
+        if (!empty($where)) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+        $sql .= " ORDER BY id DESC";
+
+        $stmt = $con->prepare($sql);
+        $stmt->execute($params);
+
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
@@ -239,69 +323,97 @@ class DemmandeImagerie extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
-    public static function listeArchive($id_user = "", $institution = "")
-    {
-        $con = self::connection();
-        if ($institution == "") {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='archive'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='archive' and id_medecin2='{$id_user}'";
-            }
-        } else {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='archive' and institution = '{$institution}'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='archive' and institution = '{$institution}' and id_medecin2='{$id_user}'";
-            }
-        }
-        $stmt = $con->prepare($req);
-        $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
-    }
-
-    public static function listeSupprimer($id_user = "", $institution = "")
-    {
-        $con = self::connection();
-        if ($institution == "") {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='supprimer'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='supprimer' and id_medecin2='{$id_user}'";
-            }
-        } else {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie WHERE statut='supprimer' and institution = '{$institution}'";
-            } else {
-                $req = "select *from demmande_imagerie WHERE statut='supprimer' and institution = '{$institution}' and id_medecin2='{$id_user}'";
-            }
-        }
-        $stmt = $con->prepare($req);
-        $stmt->execute();
-        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
-    }
-
     public static function all($id_user = "", $institution = "")
     {
         $con = self::connection();
-        if ($institution == "") {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie where payer='oui' order by id desc ";
-            } else {
-                $req = "select *from demmande_imagerie where payer='oui' and id_medecin2='{$id_user}' order by id desc ";
-            }
-        } else {
-            if ($id_user == "") {
-                $req = "select *from demmande_imagerie where payer='oui' and institution = '{$institution}' order by id desc ";
-            } else {
-                $req = "select *from demmande_imagerie where payer='oui' and institution = '{$institution}' and id_medecin2='{$id_user}' order by id desc ";
+        $where = ["payer='oui'"];
+        $params = [];
+
+        if (!empty($institution)) {
+            $where[] = "institution = ?";
+            $params[] = $institution;
+        }
+
+        if (!empty(trim($id_user))) {
+            $ids = array_filter(array_map('trim', explode(",", $id_user)), fn($id) => $id !== '');
+            if (!empty($ids)) {
+                $regexParts = [];
+                foreach ($ids as $id) {
+                    $regexParts[] = "(^|,)$id($|,)";
+                }
+                $regexPattern = implode("|", $regexParts);
+                $where[] = "id_medecin REGEXP ?";
+                $params[] = $regexPattern;
             }
         }
-        $stmt = $con->prepare($req);
-        $stmt->execute();
+
+        $sql = "SELECT * FROM demmande_imagerie WHERE " . implode(" AND ", $where) . " ORDER BY id DESC";
+        $stmt = $con->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    }
+    public static function listeSupprimer($id_user = "", $institution = "")
+    {
+        $con = self::connection();
+        $where = ["statut='supprimer'"];
+        $params = [];
+
+        if (!empty($institution)) {
+            $where[] = "institution = ?";
+            $params[] = $institution;
+        }
+
+        if (!empty(trim($id_user))) {
+            $ids = array_filter(array_map('trim', explode(",", $id_user)), fn($id) => $id !== '');
+            if (!empty($ids)) {
+                $regexParts = [];
+                foreach ($ids as $id) {
+                    $regexParts[] = "(^|,)$id($|,)";
+                }
+                $regexPattern = implode("|", $regexParts);
+                $where[] = "id_medecin REGEXP ?";
+                $params[] = $regexPattern;
+            }
+        }
+
+        $sql = "SELECT * FROM demmande_imagerie WHERE " . implode(" AND ", $where);
+        $stmt = $con->prepare($sql);
+        $stmt->execute($params);
+
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
+    public static function listeArchive($id_user = "", $institution = "")
+    {
+        $con = self::connection();
+        $where = ["statut='archive'"];
+        $params = [];
+
+        if (!empty($institution)) {
+            $where[] = "institution = ?";
+            $params[] = $institution;
+        }
+
+        if (!empty(trim($id_user))) {
+            $ids = array_filter(array_map('trim', explode(",", $id_user)), fn($id) => $id !== '');
+            if (!empty($ids)) {
+                $regexParts = [];
+                foreach ($ids as $id) {
+                    $regexParts[] = "(^|,)$id($|,)";
+                }
+                $regexPattern = implode("|", $regexParts);
+                $where[] = "id_medecin REGEXP ?";
+                $params[] = $regexPattern;
+            }
+        }
+
+        $sql = "SELECT * FROM demmande_imagerie WHERE " . implode(" AND ", $where);
+        $stmt = $con->prepare($sql);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
+    }
     public static function allPatient($id_user)
     {
         $con = self::connection();
@@ -335,7 +447,6 @@ class DemmandeImagerie extends Model
         } else {
             return null;
         }
-
     }
 
     public static function listerExamens($id_demande)
@@ -446,7 +557,7 @@ class DemmandeImagerie extends Model
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
 
-    public static function listerParDate($date1, $date2,$institution = "")
+    public static function listerParDate($date1, $date2, $institution = "")
     {
         $con = self::connection();
         if ($institution == "") {
@@ -458,5 +569,15 @@ class DemmandeImagerie extends Model
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_CLASS, __CLASS__);
     }
-
+    public static function findByIdDemmande($id)
+    {
+        $con = self::connection();
+        $req = "select *from demmande_imagerie where id='{$id}'";
+        $stmt = $con->prepare($req);
+        $stmt->execute();
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($data) {
+            return $data;
+        }
+    }
 }

@@ -219,6 +219,7 @@ class PersonelMedical extends Model
                 $_SESSION['utilisateur'] = $data[0]->id;
                 $_SESSION['pseudo'] = $data[0]->email;
                 $_SESSION['role'] = $data[0]->type;
+                $_SESSION['type']= $data[0]->type;
                 $_SESSION['id_session'] = $id_session;
                 return "ok";
             } else {

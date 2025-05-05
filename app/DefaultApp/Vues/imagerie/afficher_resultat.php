@@ -4,6 +4,9 @@ require "../vendor/autoload.php";
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
 
+
+$idd= \systeme\Model\Utilisateur::session_valeur();
+
 ?>
 <style>
     table {
@@ -88,9 +91,11 @@ $age = date("Y") - $anne_naisance;
                 $doc=$_POST['docteur'];
                 if($doc=="deverson"){
                     $demande->deverson="oui";
+                    $demande->deverson_date= date("Y-m-d");
                 }
                 if($doc=="exantus"){
                     $demande->exantus="oui";
+                    $demande->exantus_date= date("Y-m-d");
                 }
                 $m=$demande->update();
                 if($m=="ok"){
@@ -103,23 +108,28 @@ $age = date("Y") - $anne_naisance;
                 }
             }
             ?>
-            <form method="post">
+            <form method="post" style="display: none;">
                 <input type="hidden" name="app">
                 <fieldset>
                     <legend>Approuver par</legend>
                     <div class="form-group">
                         <select class="form-control" name="docteur">
                             <?php
-                            if ($demande->deverson != "oui") {
-                                ?>
-                                <option value="deverson">Deverson</option>
-                                <?php
+                            if($idd ==1){
+                                if ($demande->deverson != "oui") {
+                                    ?>
+                                    <option value="deverson">Deverson</option>
+                                    <?php
+                                }
+                            }else{
+                                if ($demande->exantus != "oui") {
+                                    ?>
+                                    <option value="exantus">Exantus</option>
+                                    <?php
+                                }
                             }
-                            if ($demande->exantus != "oui") {
-                                ?>
-                                <option value="exantus">Exantus</option>
-                                <?php
-                            }
+                            
+                           
                             ?>
                         </select>
                     </div>
@@ -141,8 +151,8 @@ $age = date("Y") - $anne_naisance;
 
                 }else{
                     ?>
-                    <a class="btn btn-success no-print btn-xs" href="afficher-resultat-imagerie-<?= $id ?>?approuver">Approuver
-                        par</a>
+                  <!--  <a class="btn btn-success no-print btn-xs" href="afficher-resultat-imagerie-<?= $id ?>?approuver">Approuver
+                        par</a>-->
                 <?php
                 }
                 ?>
@@ -190,13 +200,13 @@ $age = date("Y") - $anne_naisance;
                             <?php
                             if ($demande->deverson == "oui") {
                                 ?>
-                                <p>Signé électroniquement par : Dr. Valerie Deverson</p>
+                                <p>Signé électroniquement le <?=$demande->deverson_date ?> par : Dr. Valerie Deverson</p>
                                 <?php
                             }
 
                             if ($demande->exantus == "oui") {
                                 ?>
-                                <p>Signé électroniquement par : Dr. Lerby Exantus</p>
+                                <p>Signé électroniquement le <?=$demande->exantus_date ?> par : Dr. Lerby Exantus</p>
                                 <?php
                             }
                             ?>
